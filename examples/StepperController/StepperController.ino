@@ -13,6 +13,10 @@
 #include "IndexedContainer.h"
 #include "FunctorCallbacks.h"
 
+#include "SPI.h"
+#include "TMC429.h"
+#include "TMC26X.h"
+
 #include "ModularServer.h"
 #include "ModularDevice.h"
 #include "StepDirController.h"
