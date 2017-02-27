@@ -49,6 +49,7 @@ private:
 
   // Handlers
   void setCurrentScaleHandler(const size_t driver);
+  void setMicrostepsPerStepHandler(const size_t driver);
 
 };
 

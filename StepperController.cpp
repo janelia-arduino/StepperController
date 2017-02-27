@@ -52,9 +52,14 @@ void StepperController::setup()
   current_scale_property.setRange(constants::current_scale_min,constants::current_scale_max);
   current_scale_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setCurrentScaleHandler));
 
+  modular_server::Property & microsteps_per_step_property = modular_server_.createProperty(constants::microsteps_per_step_property_name,constants::microsteps_per_step_default);
+  microsteps_per_step_property.setSubset(constants::microsteps_per_step_subset);
+  microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setMicrostepsPerStepHandler));
+
   for (size_t tmc26x_i=0; tmc26x_i<constants::TMC26X_COUNT; ++tmc26x_i)
   {
     setCurrentScaleHandler(tmc26x_i);
+    setMicrostepsPerStepHandler(tmc26x_i);
   }
 
   // Parameters
@@ -94,4 +99,62 @@ void StepperController::setCurrentScaleHandler(const size_t driver)
   current_scale_property.setElementValue(driver,current_scale);
 
   current_scale_property.reenableFunctors();
+}
+
+void StepperController::setMicrostepsPerStepHandler(const size_t driver)
+{
+  modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
+  long microsteps_per_step;
+  microsteps_per_step_property.getElementValue(driver,microsteps_per_step);
+
+  TMC26X & tmc26x = tmc26xs_[driver];
+
+  switch (microsteps_per_step)
+  {
+    case 1:
+    {
+      tmc26x.setMicrostepsPerStepTo1();
+      break;
+    }
+    case 2:
+    {
+      tmc26x.setMicrostepsPerStepTo2();
+      break;
+    }
+    case 4:
+    {
+      tmc26x.setMicrostepsPerStepTo4();
+      break;
+    }
+    case 8:
+    {
+      tmc26x.setMicrostepsPerStepTo8();
+      break;
+    }
+    case 16:
+    {
+      tmc26x.setMicrostepsPerStepTo16();
+      break;
+    }
+    case 32:
+    {
+      tmc26x.setMicrostepsPerStepTo32();
+      break;
+    }
+    case 64:
+    {
+      tmc26x.setMicrostepsPerStepTo64();
+      break;
+    }
+    case 128:
+    {
+      tmc26x.setMicrostepsPerStepTo128();
+      break;
+    }
+    case 256:
+    {
+      tmc26x.setMicrostepsPerStepTo256();
+      break;
+    }
+  }
 }

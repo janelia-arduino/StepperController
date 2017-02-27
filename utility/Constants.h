@@ -37,6 +37,10 @@ extern ConstantString current_scale_property_name;
 extern const long current_scale_min;
 extern const long current_scale_max;
 
+extern ConstantString microsteps_per_step_property_name;
+enum{MICROSTEPS_PER_STEP_SUBSET_LENGTH=9};
+extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH];
+
 // Parameters
 
 // Functions

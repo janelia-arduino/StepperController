@@ -28,6 +28,13 @@ const long current_scale_default[TMC26X_COUNT] =
     20
   };
 
+const long microsteps_per_step_default[TMC26X_COUNT] =
+  {
+    microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,
+    microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,
+    microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,
+  };
+
 // Parameters
 
 // Functions
