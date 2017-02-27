@@ -27,7 +27,6 @@ void StepperController::setup()
     tmc26x.setStepDirInput();
     tmc26x.setDefaultChopperConfig();
     tmc26x.disableCoolStep();
-    // tmc26X.setMicrostepsPerStepTo256();
   }
 
   // Pin Setup
