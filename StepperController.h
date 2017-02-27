@@ -45,7 +45,10 @@ private:
   modular_server::Function functions_[stepper_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[stepper_controller::constants::CALLBACK_COUNT_MAX];
 
+  TMC26X tmc26xs_[stepper_controller::constants::TMC26X_COUNT];
+
   // Handlers
+  void setCurrentScaleHandler(const size_t driver);
 
 };
 

@@ -29,14 +29,13 @@ extern const modular_server::FirmwareInfo firmware_info;
 // Interrupts
 
 // Units
+extern ConstantString percent_unit;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
-extern ConstantString flipper_delay_property_name;
-extern const long flipper_delay_min;
-extern const long flipper_delay_max;
-extern const long flipper_delay_default;
-
+extern ConstantString current_scale_property_name;
+extern const long current_scale_min;
+extern const long current_scale_max;
 
 // Parameters
 

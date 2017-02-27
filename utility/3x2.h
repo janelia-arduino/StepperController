@@ -16,12 +16,17 @@ namespace stepper_controller
 {
 namespace constants
 {
+enum{TMC26X_COUNT=3};
+
+extern const size_t cs_pins[TMC26X_COUNT];
+
 // Interrupts
 
 // Units
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern const long current_scale_default[TMC26X_COUNT];
 
 // Parameters
 

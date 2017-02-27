@@ -27,12 +27,12 @@ const modular_server::FirmwareInfo firmware_info =
 // Interrupts
 
 // Units
+CONSTANT_STRING(percent_unit,"%");
 
 // Properties
-CONSTANT_STRING(flipper_delay_property_name,"flipperDelay");
-const long flipper_delay_min = 0;
-const long flipper_delay_max = 10000;
-const long flipper_delay_default = 10;
+CONSTANT_STRING(current_scale_property_name,"currentScale");
+const long current_scale_min = 1;
+const long current_scale_max = 100;
 
 // Parameters
 
