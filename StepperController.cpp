@@ -24,9 +24,6 @@ void StepperController::setup()
   {
     TMC26X & tmc26x = tmc26xs_[tmc26x_i];
     tmc26x.setup(constants::cs_pins[tmc26x_i]);
-    tmc26x.setStepDirInput();
-    tmc26x.setDefaultChopperConfig();
-    tmc26x.disableCoolStep();
   }
 
   // Pin Setup
@@ -55,17 +52,27 @@ void StepperController::setup()
   microsteps_per_step_property.setSubset(constants::microsteps_per_step_subset);
   microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setMicrostepsPerStepHandler));
 
-  for (size_t tmc26x_i=0; tmc26x_i<constants::TMC26X_COUNT; ++tmc26x_i)
-  {
-    setCurrentScaleHandler(tmc26x_i);
-    setMicrostepsPerStepHandler(tmc26x_i);
-  }
+  reinitialize();
 
   // Parameters
 
   // Functions
 
   // Callbacks
+}
+
+void StepperController::reinitialize()
+{
+  StepDirController::reinitialize();
+  for (size_t tmc26x_i=0; tmc26x_i<constants::TMC26X_COUNT; ++tmc26x_i)
+  {
+    TMC26X & tmc26x = tmc26xs_[tmc26x_i];
+    tmc26x.setStepDirInput();
+    tmc26x.setDefaultChopperConfig();
+    tmc26x.disableCoolStep();
+    setCurrentScaleHandler(tmc26x_i);
+    setMicrostepsPerStepHandler(tmc26x_i);
+  }
 }
 
 // Handlers must be non-blocking (avoid 'delay')

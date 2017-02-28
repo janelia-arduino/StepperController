@@ -39,6 +39,8 @@ public:
   StepperController();
   virtual void setup();
 
+  virtual void reinitialize();
+
 private:
   modular_server::Property properties_[stepper_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[stepper_controller::constants::PARAMETER_COUNT_MAX];
