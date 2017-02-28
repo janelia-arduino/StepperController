@@ -33,6 +33,8 @@ extern ConstantString percent_unit;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern const double steps_per_position_unit_element_default;
+
 extern ConstantString current_scale_property_name;
 extern const long current_scale_min;
 extern const long current_scale_max;

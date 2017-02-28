@@ -41,6 +41,10 @@ public:
 
   virtual void reinitialize();
 
+protected:
+  virtual double stepsToPositionUnits(const size_t channel, const double steps);
+  virtual double positionUnitsToSteps(const size_t channel, const double position_units);
+
 private:
   modular_server::Property properties_[stepper_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[stepper_controller::constants::PARAMETER_COUNT_MAX];
@@ -51,7 +55,8 @@ private:
 
   // Handlers
   void setCurrentScaleHandler(const size_t driver);
-  void setMicrostepsPerStepHandler(const size_t driver);
+  void preSetMicrostepsPerStepHandler(const size_t driver);
+  void postSetMicrostepsPerStepHandler(const size_t driver);
 
 };
 

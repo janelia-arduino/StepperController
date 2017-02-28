@@ -21,6 +21,13 @@ const size_t cs_pins[TMC26X_COUNT] = {9,8,7};
 // Units
 
 // Properties
+const double steps_per_position_unit_default[step_dir_controller::constants::CHANNEL_COUNT] =
+  {
+    steps_per_position_unit_element_default,
+    steps_per_position_unit_element_default,
+    steps_per_position_unit_element_default,
+  };
+
 const long current_scale_default[TMC26X_COUNT] =
   {
     20,

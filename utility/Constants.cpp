@@ -30,6 +30,8 @@ const modular_server::FirmwareInfo firmware_info =
 CONSTANT_STRING(percent_unit,"%");
 
 // Properties
+extern const double steps_per_position_unit_element_default = 200;
+
 CONSTANT_STRING(current_scale_property_name,"currentScale");
 const long current_scale_min = 1;
 const long current_scale_max = 100;

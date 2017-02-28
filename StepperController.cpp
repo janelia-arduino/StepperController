@@ -43,6 +43,9 @@ void StepperController::setup()
                               callbacks_);
 
   // Properties
+  modular_server::Property & steps_per_position_unit_property = modular_server_.property(step_dir_controller::constants::steps_per_position_unit_property_name);
+  steps_per_position_unit_property.setDefaultValue(constants::steps_per_position_unit_default);
+
   modular_server::Property & current_scale_property = modular_server_.createProperty(constants::current_scale_property_name,constants::current_scale_default);
   current_scale_property.setUnits(constants::percent_unit);
   current_scale_property.setRange(constants::current_scale_min,constants::current_scale_max);
@@ -50,7 +53,8 @@ void StepperController::setup()
 
   modular_server::Property & microsteps_per_step_property = modular_server_.createProperty(constants::microsteps_per_step_property_name,constants::microsteps_per_step_default);
   microsteps_per_step_property.setSubset(constants::microsteps_per_step_subset);
-  microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setMicrostepsPerStepHandler));
+  microsteps_per_step_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::preSetMicrostepsPerStepHandler));
+  microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::postSetMicrostepsPerStepHandler));
 
   reinitialize();
 
@@ -71,8 +75,31 @@ void StepperController::reinitialize()
     tmc26x.setDefaultChopperConfig();
     tmc26x.disableCoolStep();
     setCurrentScaleHandler(tmc26x_i);
-    setMicrostepsPerStepHandler(tmc26x_i);
+    preSetMicrostepsPerStepHandler(tmc26x_i);
+    postSetMicrostepsPerStepHandler(tmc26x_i);
   }
+}
+
+double StepperController::stepsToPositionUnits(const size_t channel, const double steps)
+{
+  double position_units = StepDirController::stepsToPositionUnits(channel,steps);
+
+  modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
+  long microsteps_per_step;
+  microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
+
+  return position_units/microsteps_per_step;
+}
+
+double StepperController::positionUnitsToSteps(const size_t channel, const double position_units)
+{
+  double steps = StepDirController::positionUnitsToSteps(channel,position_units);
+
+  modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
+  long microsteps_per_step;
+  microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
+
+  return steps*microsteps_per_step;
 }
 
 // Handlers must be non-blocking (avoid 'delay')
@@ -107,8 +134,15 @@ void StepperController::setCurrentScaleHandler(const size_t driver)
   current_scale_property.reenableFunctors();
 }
 
-void StepperController::setMicrostepsPerStepHandler(const size_t driver)
+void StepperController::preSetMicrostepsPerStepHandler(const size_t driver)
 {
+  preUpdateLimitsHandler(driver);
+}
+
+void StepperController::postSetMicrostepsPerStepHandler(const size_t driver)
+{
+  postUpdateLimitsHandler(driver);
+
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   long microsteps_per_step;
   microsteps_per_step_property.getElementValue(driver,microsteps_per_step);
