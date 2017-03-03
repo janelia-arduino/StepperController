@@ -14,7 +14,7 @@ namespace stepper_controller
 {
 namespace constants
 {
-const size_t cs_pins[TMC26X_COUNT] = {9,8,7};
+const size_t cs_pins[DRIVER_COUNT] = {9,8,7};
 
 // Interrupts
 
@@ -28,14 +28,14 @@ const double steps_per_position_unit_default[step_dir_controller::constants::CHA
     steps_per_position_unit_element_default,
   };
 
-const long current_scale_default[TMC26X_COUNT] =
+const long current_scale_default[DRIVER_COUNT] =
   {
     20,
     20,
     20
   };
 
-const long microsteps_per_step_default[TMC26X_COUNT] =
+const long microsteps_per_step_default[DRIVER_COUNT] =
   {
     microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,
     microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,

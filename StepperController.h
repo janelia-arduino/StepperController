@@ -41,6 +41,9 @@ public:
 
   virtual void reinitialize();
 
+  void minimizeCurrent(const size_t channel);
+  void restoreCurrent(const size_t channel);
+
 protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
   virtual double positionUnitsToSteps(const size_t channel, const double position_units);
@@ -51,12 +54,15 @@ private:
   modular_server::Function functions_[stepper_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[stepper_controller::constants::CALLBACK_COUNT_MAX];
 
-  TMC26X tmc26xs_[stepper_controller::constants::TMC26X_COUNT];
+  typedef TMC26X Driver;
+  Driver drivers_[stepper_controller::constants::DRIVER_COUNT];
 
   // Handlers
-  void setCurrentScaleHandler(const size_t driver);
-  void preSetMicrostepsPerStepHandler(const size_t driver);
-  void postSetMicrostepsPerStepHandler(const size_t driver);
+  void setCurrentScaleHandler(const size_t channel);
+  void preSetMicrostepsPerStepHandler(const size_t channel);
+  void postSetMicrostepsPerStepHandler(const size_t channel);
+  void minimizeCurrentHandler();
+  void restoreCurrentHandler();
 
 };
 

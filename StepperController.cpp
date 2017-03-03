@@ -19,11 +19,11 @@ void StepperController::setup()
   // Parent Setup
   StepDirController::setup();
 
-  // TMC26X Setup
-  for (size_t tmc26x_i=0; tmc26x_i<constants::TMC26X_COUNT; ++tmc26x_i)
+  // Driver Setup
+  for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
   {
-    TMC26X & tmc26x = tmc26xs_[tmc26x_i];
-    tmc26x.setup(constants::cs_pins[tmc26x_i]);
+    Driver & driver = drivers_[driver_i];
+    driver.setup(constants::cs_pins[driver_i]);
   }
 
   // Pin Setup
@@ -59,8 +59,16 @@ void StepperController::setup()
   reinitialize();
 
   // Parameters
+  modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
 
   // Functions
+  modular_server::Function & minimize_current_function = modular_server_.createFunction(constants::minimize_current_function_name);
+  minimize_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::minimizeCurrentHandler));
+  minimize_current_function.addParameter(channel_parameter);
+
+  modular_server::Function & restore_current_function = modular_server_.createFunction(constants::restore_current_function_name);
+  restore_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreCurrentHandler));
+  restore_current_function.addParameter(channel_parameter);
 
   // Callbacks
 }
@@ -68,15 +76,31 @@ void StepperController::setup()
 void StepperController::reinitialize()
 {
   StepDirController::reinitialize();
-  for (size_t tmc26x_i=0; tmc26x_i<constants::TMC26X_COUNT; ++tmc26x_i)
+  for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
   {
-    TMC26X & tmc26x = tmc26xs_[tmc26x_i];
-    tmc26x.setStepDirInput();
-    tmc26x.setDefaultChopperConfig();
-    tmc26x.disableCoolStep();
-    setCurrentScaleHandler(tmc26x_i);
-    preSetMicrostepsPerStepHandler(tmc26x_i);
-    postSetMicrostepsPerStepHandler(tmc26x_i);
+    Driver & driver = drivers_[driver_i];
+    driver.setStepDirInput();
+    driver.setDefaultChopperConfig();
+    driver.disableCoolStep();
+    setCurrentScaleHandler(driver_i);
+    preSetMicrostepsPerStepHandler(driver_i);
+    postSetMicrostepsPerStepHandler(driver_i);
+  }
+}
+
+void StepperController::minimizeCurrent(const size_t channel)
+{
+  if (channel < constants::DRIVER_COUNT)
+  {
+    drivers_[channel].setCurrentScalePercent(constants::current_scale_min);
+  }
+}
+
+void StepperController::restoreCurrent(const size_t channel)
+{
+  if (channel < constants::DRIVER_COUNT)
+  {
+    setCurrentScaleHandler(channel);
   }
 }
 
@@ -119,82 +143,90 @@ double StepperController::positionUnitsToSteps(const size_t channel, const doubl
 // modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type
 
-void StepperController::setCurrentScaleHandler(const size_t driver)
+void StepperController::setCurrentScaleHandler(const size_t channel)
 {
   modular_server::Property & current_scale_property = modular_server_.property(constants::current_scale_property_name);
   long current_scale;
-  current_scale_property.getElementValue(driver,current_scale);
+  current_scale_property.getElementValue(channel,current_scale);
 
-  current_scale = tmc26xs_[driver].setCurrentScalePercent(current_scale);
-
-  current_scale_property.disableFunctors();
-
-  current_scale_property.setElementValue(driver,current_scale);
-
-  current_scale_property.reenableFunctors();
+  drivers_[channel].setCurrentScalePercent(current_scale);
 }
 
-void StepperController::preSetMicrostepsPerStepHandler(const size_t driver)
+void StepperController::preSetMicrostepsPerStepHandler(const size_t channel)
 {
-  preUpdateScaledPropertiesHandler(driver);
+  preUpdateScaledPropertiesHandler(channel);
 }
 
-void StepperController::postSetMicrostepsPerStepHandler(const size_t driver)
+void StepperController::postSetMicrostepsPerStepHandler(const size_t channel)
 {
-  postUpdateScaledPropertiesHandler(driver);
+  postUpdateScaledPropertiesHandler(channel);
 
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   long microsteps_per_step;
-  microsteps_per_step_property.getElementValue(driver,microsteps_per_step);
+  microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
 
-  TMC26X & tmc26x = tmc26xs_[driver];
+  Driver & driver = drivers_[channel];
 
   switch (microsteps_per_step)
   {
     case 1:
     {
-      tmc26x.setMicrostepsPerStepTo1();
+      driver.setMicrostepsPerStepTo1();
       break;
     }
     case 2:
     {
-      tmc26x.setMicrostepsPerStepTo2();
+      driver.setMicrostepsPerStepTo2();
       break;
     }
     case 4:
     {
-      tmc26x.setMicrostepsPerStepTo4();
+      driver.setMicrostepsPerStepTo4();
       break;
     }
     case 8:
     {
-      tmc26x.setMicrostepsPerStepTo8();
+      driver.setMicrostepsPerStepTo8();
       break;
     }
     case 16:
     {
-      tmc26x.setMicrostepsPerStepTo16();
+      driver.setMicrostepsPerStepTo16();
       break;
     }
     case 32:
     {
-      tmc26x.setMicrostepsPerStepTo32();
+      driver.setMicrostepsPerStepTo32();
       break;
     }
     case 64:
     {
-      tmc26x.setMicrostepsPerStepTo64();
+      driver.setMicrostepsPerStepTo64();
       break;
     }
     case 128:
     {
-      tmc26x.setMicrostepsPerStepTo128();
+      driver.setMicrostepsPerStepTo128();
       break;
     }
     case 256:
     {
-      tmc26x.setMicrostepsPerStepTo256();
+      driver.setMicrostepsPerStepTo256();
       break;
     }
   }
+}
+
+void StepperController::minimizeCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  minimizeCurrent(channel);
+}
+
+void StepperController::restoreCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  restoreCurrent(channel);
 }

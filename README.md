@@ -13,6 +13,22 @@ License:
 ##API
 
 ```json
+{
+  "id":"getApi",
+  "result":{
+    "firmware":["StepperController"],
+    "functions":[
+      "minimizeCurrent",
+      "restoreCurrent"
+    ],
+    "parameters":[],
+    "properties":[
+      "currentScale",
+      "microstepsPerStep"
+    ],
+    "callbacks":[]
+  }
+}
 ```
 
 ##More Detailed Modular Device Information

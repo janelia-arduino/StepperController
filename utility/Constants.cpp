@@ -53,6 +53,8 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
 // Parameters
 
 // Functions
+CONSTANT_STRING(minimize_current_function_name,"minimizeCurrent");
+CONSTANT_STRING(restore_current_function_name,"restoreCurrent");
 
 // Callbacks
 
