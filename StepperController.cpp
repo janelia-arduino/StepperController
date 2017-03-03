@@ -136,12 +136,12 @@ void StepperController::setCurrentScaleHandler(const size_t driver)
 
 void StepperController::preSetMicrostepsPerStepHandler(const size_t driver)
 {
-  preUpdateLimitsHandler(driver);
+  preUpdateScaledPropertiesHandler(driver);
 }
 
 void StepperController::postSetMicrostepsPerStepHandler(const size_t driver)
 {
-  postUpdateLimitsHandler(driver);
+  postUpdateScaledPropertiesHandler(driver);
 
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   long microsteps_per_step;
