@@ -14,7 +14,7 @@ namespace stepper_controller
 {
 namespace constants
 {
-const size_t cs_pins[DRIVER_COUNT] = {9,8,7};
+const size_t cs_pins[DRIVER_COUNT] = {14,15,16};
 
 // Interrupts
 
