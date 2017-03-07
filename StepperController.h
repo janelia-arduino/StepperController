@@ -61,6 +61,7 @@ private:
   void setCurrentScaleHandler(const size_t channel);
   void preSetMicrostepsPerStepHandler(const size_t channel);
   void postSetMicrostepsPerStepHandler(const size_t channel);
+  void setMicrostepsPerStepHandler(const size_t channel);
   void minimizeCurrentHandler();
   void restoreCurrentHandler();
 

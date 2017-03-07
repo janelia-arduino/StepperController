@@ -83,8 +83,7 @@ void StepperController::reinitialize()
     driver.setDefaultChopperConfig();
     driver.disableCoolStep();
     setCurrentScaleHandler(driver_i);
-    preSetMicrostepsPerStepHandler(driver_i);
-    postSetMicrostepsPerStepHandler(driver_i);
+    setMicrostepsPerStepHandler(driver_i);
   }
 }
 
@@ -160,7 +159,11 @@ void StepperController::preSetMicrostepsPerStepHandler(const size_t channel)
 void StepperController::postSetMicrostepsPerStepHandler(const size_t channel)
 {
   postUpdateScaledPropertiesHandler(channel);
+  setMicrostepsPerStepHandler(channel);
+}
 
+void StepperController::setMicrostepsPerStepHandler(const size_t channel)
+{
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   long microsteps_per_step;
   microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
