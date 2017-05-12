@@ -8,7 +8,21 @@ License:
 
     BSD
 
-[Examples](./examples)
+## Ancestors
+
+[ModularServer](https://github.com/janelia-arduino/ModularServer)
+
+[ModularDeviceBase](https://github.com/janelia-arduino/ModularDeviceBase)
+
+[StepDirController](https://github.com/janelia-arduino/StepDirController)
+
+## Clients
+
+## Devices
+
+[modular_device_base](https://github.com/janelia-modular-devices/modular_device_base.git)
+
+[stepper_controller](https://github.com/janelia-modular-devices/stepper_controller.git)
 
 ## API
 
