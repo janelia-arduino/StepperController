@@ -26,7 +26,7 @@ extern const size_t cs_pins[DRIVER_COUNT];
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
-extern const double steps_per_position_unit_default[step_dir_controller::constants::CHANNEL_COUNT];
+extern const double steps_per_position_units_default[step_dir_controller::constants::CHANNEL_COUNT];
 
 extern const long current_scale_default[DRIVER_COUNT];
 

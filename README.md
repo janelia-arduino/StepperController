@@ -45,6 +45,84 @@ License:
 }
 ```
 
+## API Verbose
+
+```json
+{
+  "id":"getApiVerbose",
+  "result":{
+    "firmware":["StepperController"],
+    "functions":[
+      {
+        "name":"minimizeCurrent",
+        "parameters":[
+          "channel"
+        ]
+      },
+      {
+        "name":"restoreCurrent",
+        "parameters":[
+          "channel"
+        ]
+      }
+    ],
+    "parameters":[],
+    "properties":[
+      {
+        "name":"currentScale",
+        "type":"array",
+        "array_element_type":"long",
+        "units":"%",
+        "functions":[
+          "getValue",
+          "setValue",
+          "getDefaultValue",
+          "setValueToDefault",
+          "getElementValue",
+          "setElementValue",
+          "getDefaultElementValue",
+          "setElementValueToDefault",
+          "setAllElementValues",
+          "getArrayLength",
+          "setArrayLength"
+        ],
+        "parameters":[
+          "value",
+          "element_index",
+          "element_value",
+          "array_length"
+        ]
+      },
+      {
+        "name":"microstepsPerStep",
+        "type":"array",
+        "array_element_type":"long",
+        "functions":[
+          "getValue",
+          "setValue",
+          "getDefaultValue",
+          "setValueToDefault",
+          "getElementValue",
+          "setElementValue",
+          "getDefaultElementValue",
+          "setElementValueToDefault",
+          "setAllElementValues",
+          "getArrayLength",
+          "setArrayLength"
+        ],
+        "parameters":[
+          "value",
+          "element_index",
+          "element_value",
+          "array_length"
+        ]
+      }
+    ],
+    "callbacks":[]
+  }
+}
+```
+
 ## More Detailed Modular Device Information
 
 [modular-devices](https://github.com/janelia-modular-devices/modular-devices)

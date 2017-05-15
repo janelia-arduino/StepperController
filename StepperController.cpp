@@ -43,11 +43,11 @@ void StepperController::setup()
                               callbacks_);
 
   // Properties
-  modular_server::Property & steps_per_position_unit_property = modular_server_.property(step_dir_controller::constants::steps_per_position_unit_property_name);
-  steps_per_position_unit_property.setDefaultValue(constants::steps_per_position_unit_default);
+  modular_server::Property & steps_per_position_units_property = modular_server_.property(step_dir_controller::constants::steps_per_position_units_property_name);
+  steps_per_position_units_property.setDefaultValue(constants::steps_per_position_units_default);
 
   modular_server::Property & current_scale_property = modular_server_.createProperty(constants::current_scale_property_name,constants::current_scale_default);
-  current_scale_property.setUnits(constants::percent_unit);
+  current_scale_property.setUnits(constants::percent_units);
   current_scale_property.setRange(constants::current_scale_min,constants::current_scale_max);
   current_scale_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setCurrentScaleHandler));
 

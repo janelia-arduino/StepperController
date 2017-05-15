@@ -21,11 +21,11 @@ const size_t cs_pins[DRIVER_COUNT] = {14,15,16};
 // Units
 
 // Properties
-const double steps_per_position_unit_default[step_dir_controller::constants::CHANNEL_COUNT] =
+const double steps_per_position_units_default[step_dir_controller::constants::CHANNEL_COUNT] =
   {
-    steps_per_position_unit_element_default,
-    steps_per_position_unit_element_default,
-    steps_per_position_unit_element_default,
+    steps_per_position_units_element_default,
+    steps_per_position_units_element_default,
+    steps_per_position_units_element_default,
   };
 
 const long current_scale_default[DRIVER_COUNT] =
