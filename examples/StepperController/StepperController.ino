@@ -15,7 +15,7 @@
 
 #include "SPI.h"
 #include "TMC429.h"
-#include "TMC26X.h"
+#include "TMC2130.h"
 
 #include "ModularClient.h"
 

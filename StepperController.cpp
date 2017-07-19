@@ -169,55 +169,7 @@ void StepperController::setMicrostepsPerStepHandler(const size_t channel)
   microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
 
   Driver & driver = drivers_[channel];
-
-  switch (microsteps_per_step)
-  {
-    case 1:
-    {
-      driver.setMicrostepsPerStepTo1();
-      break;
-    }
-    case 2:
-    {
-      driver.setMicrostepsPerStepTo2();
-      break;
-    }
-    case 4:
-    {
-      driver.setMicrostepsPerStepTo4();
-      break;
-    }
-    case 8:
-    {
-      driver.setMicrostepsPerStepTo8();
-      break;
-    }
-    case 16:
-    {
-      driver.setMicrostepsPerStepTo16();
-      break;
-    }
-    case 32:
-    {
-      driver.setMicrostepsPerStepTo32();
-      break;
-    }
-    case 64:
-    {
-      driver.setMicrostepsPerStepTo64();
-      break;
-    }
-    case 128:
-    {
-      driver.setMicrostepsPerStepTo128();
-      break;
-    }
-    case 256:
-    {
-      driver.setMicrostepsPerStepTo256();
-      break;
-    }
-  }
+  driver.setMicrostepsPerStep(microsteps_per_step);
 }
 
 void StepperController::minimizeCurrentHandler()
