@@ -30,11 +30,34 @@ const modular_server::FirmwareInfo firmware_info =
 CONSTANT_STRING(percent_units,"%");
 
 // Properties
-extern const double steps_per_position_units_element_default = 200;
+const double steps_per_position_units_element_default = 200;
 
-CONSTANT_STRING(current_scale_property_name,"currentScale");
-const long current_scale_min = 1;
-const long current_scale_max = 100;
+const double velocity_max_element_default = step_dir_controller::constants::velocity_max_element_default;
+
+const double velocity_min_element_default = step_dir_controller::constants::velocity_min_element_default;
+
+const double acceleration_max_element_default = step_dir_controller::constants::acceleration_max_element_default;
+
+const ConstantString * const enable_polarity_element_default = &step_dir_controller::constants::polarity_low;
+
+const bool left_switch_stop_enabled_element_default = false;
+
+const bool right_switch_stop_enabled_element_default = false;
+
+const bool switch_soft_stop_enabled_element_default = false;
+
+const double home_velocity_element_default = step_dir_controller::constants::home_velocity_element_default;
+
+CONSTANT_STRING(run_current_property_name,"runCurrent");
+const long percent_min = 0;
+const long percent_max = 100;
+const long run_current_element_default = 50;
+
+CONSTANT_STRING(hold_current_property_name,"holdCurrent");
+const long hold_current_element_default = 25;
+
+CONSTANT_STRING(hold_delay_property_name,"holdDelay");
+const long hold_delay_element_default = 50;
 
 CONSTANT_STRING(microsteps_per_step_property_name,"microstepsPerStep");
 modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH] =
@@ -53,8 +76,8 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
 // Parameters
 
 // Functions
-CONSTANT_STRING(minimize_current_function_name,"minimizeCurrent");
-CONSTANT_STRING(restore_current_function_name,"restoreCurrent");
+CONSTANT_STRING(minimize_hold_current_function_name,"minimizeHoldCurrent");
+CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
 
 // Callbacks
 

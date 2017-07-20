@@ -31,57 +31,57 @@ const double steps_per_position_units_default[DRIVER_COUNT] =
 
 const double velocity_max_default[DRIVER_COUNT] =
   {
-    step_dir_controller::constants::velocity_max_element_default,
+    velocity_max_element_default,
   };
 
 const double velocity_min_default[DRIVER_COUNT] =
   {
-    step_dir_controller::constants::velocity_min_element_default,
+    velocity_min_element_default,
   };
 
 const double acceleration_max_default[DRIVER_COUNT] =
   {
-    step_dir_controller::constants::acceleration_max_element_default,
+    acceleration_max_element_default,
   };
 
 const ConstantString * const enable_polarity_default[DRIVER_COUNT] =
   {
-    &step_dir_controller::constants::polarity_low,
-  };
-
-const ConstantString * const step_polarity_default[DRIVER_COUNT] =
-  {
-    &step_dir_controller::constants::polarity_high,
-  };
-
-const ConstantString * const dir_polarity_default[DRIVER_COUNT] =
-  {
-    &step_dir_controller::constants::polarity_high,
+    enable_polarity_element_default,
   };
 
 const bool left_switch_stop_enabled_default[DRIVER_COUNT] =
   {
-    false,
+    left_switch_stop_enabled_element_default,
   };
 
 const bool right_switch_stop_enabled_default[DRIVER_COUNT] =
   {
-    false,
+    right_switch_stop_enabled_element_default,
   };
 
 const bool switch_soft_stop_enabled_default[DRIVER_COUNT] =
   {
-    false,
+    switch_soft_stop_enabled_element_default,
   };
 
 const double home_velocity_default[DRIVER_COUNT] =
   {
-    step_dir_controller::constants::home_velocity_element_default,
+    home_velocity_element_default,
   };
 
-const long current_scale_default[DRIVER_COUNT] =
+const long run_current_default[DRIVER_COUNT] =
   {
-    20,
+    run_current_element_default,
+  };
+
+const long hold_current_default[DRIVER_COUNT] =
+  {
+    hold_current_element_default,
+  };
+
+const long hold_delay_default[DRIVER_COUNT] =
+  {
+    hold_delay_element_default,
   };
 
 const long microsteps_per_step_default[DRIVER_COUNT] =

@@ -24,7 +24,7 @@
 
 #include "SPI.h"
 #include "TMC429.h"
-#include "TMC26X.h"
+#include "TMC2130.h"
 
 #include "ModularClient.h"
 
@@ -43,8 +43,8 @@ public:
 
   virtual void reinitialize();
 
-  void minimizeCurrent(const size_t channel);
-  void restoreCurrent(const size_t channel);
+  void minimizeHoldCurrent(const size_t channel);
+  void restoreHoldCurrent(const size_t channel);
 
 protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
@@ -56,16 +56,18 @@ private:
   modular_server::Function functions_[stepper_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[stepper_controller::constants::CALLBACK_COUNT_MAX];
 
-  typedef TMC26X Driver;
+  typedef TMC2130 Driver;
   Driver drivers_[stepper_controller::constants::DRIVER_COUNT];
 
   // Handlers
-  void setCurrentScaleHandler(const size_t channel);
+  void setRunCurrentHandler(const size_t channel);
+  void setHoldCurrentHandler(const size_t channel);
+  void setHoldDelayHandler(const size_t channel);
   void preSetMicrostepsPerStepHandler(const size_t channel);
   void postSetMicrostepsPerStepHandler(const size_t channel);
   void setMicrostepsPerStepHandler(const size_t channel);
-  void minimizeCurrentHandler();
-  void restoreCurrentHandler();
+  void minimizeHoldCurrentHandler();
+  void restoreHoldCurrentHandler();
 
 };
 

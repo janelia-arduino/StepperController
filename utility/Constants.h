@@ -16,7 +16,7 @@ namespace stepper_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=3};
+enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=1};
 enum{FUNCTION_COUNT_MAX=2};
 enum{CALLBACK_COUNT_MAX=1};
@@ -35,9 +35,32 @@ extern ConstantString percent_units;
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 extern const double steps_per_position_units_element_default;
 
-extern ConstantString current_scale_property_name;
-extern const long current_scale_min;
-extern const long current_scale_max;
+extern const double velocity_max_element_default;
+
+extern const double velocity_min_element_default;
+
+extern const double acceleration_max_element_default;
+
+extern const ConstantString * const enable_polarity_element_default;
+
+extern const bool left_switch_stop_enabled_element_default;
+
+extern const bool right_switch_stop_enabled_element_default;
+
+extern const bool switch_soft_stop_enabled_element_default;
+
+extern const double home_velocity_element_default;
+
+extern ConstantString run_current_property_name;
+extern const long percent_min;
+extern const long percent_max;
+extern const long run_current_element_default;
+
+extern ConstantString hold_current_property_name;
+extern const long hold_current_element_default;
+
+extern ConstantString hold_delay_property_name;
+extern const long hold_delay_element_default;
 
 extern ConstantString microsteps_per_step_property_name;
 enum{MICROSTEPS_PER_STEP_SUBSET_LENGTH=9};
@@ -46,8 +69,8 @@ extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PE
 // Parameters
 
 // Functions
-extern ConstantString minimize_current_function_name;
-extern ConstantString restore_current_function_name;
+extern ConstantString minimize_hold_current_function_name;
+extern ConstantString restore_hold_current_function_name;
 
 // Callbacks
 

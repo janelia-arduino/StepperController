@@ -46,10 +46,44 @@ void StepperController::setup()
   modular_server::Property & steps_per_position_units_property = modular_server_.property(step_dir_controller::constants::steps_per_position_units_property_name);
   steps_per_position_units_property.setDefaultValue(constants::steps_per_position_units_default);
 
-  modular_server::Property & current_scale_property = modular_server_.createProperty(constants::current_scale_property_name,constants::current_scale_default);
-  current_scale_property.setUnits(constants::percent_units);
-  current_scale_property.setRange(constants::current_scale_min,constants::current_scale_max);
-  current_scale_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setCurrentScaleHandler));
+  modular_server::Property & velocity_max_property = modular_server_.property(step_dir_controller::constants::velocity_max_property_name);
+  velocity_max_property.setDefaultValue(constants::velocity_max_default);
+
+  modular_server::Property & velocity_min_property = modular_server_.property(step_dir_controller::constants::velocity_min_property_name);
+  velocity_min_property.setDefaultValue(constants::velocity_min_default);
+
+  modular_server::Property & acceleration_max_property = modular_server_.property(step_dir_controller::constants::acceleration_max_property_name);
+  acceleration_max_property.setDefaultValue(constants::acceleration_max_default);
+
+  modular_server::Property & enable_polarity_property = modular_server_.property(step_dir_controller::constants::enable_polarity_property_name);
+  enable_polarity_property.setDefaultValue(constants::enable_polarity_default);
+
+  modular_server::Property & left_switch_stop_enabled_property = modular_server_.property(step_dir_controller::constants::left_switch_stop_enabled_property_name);
+  left_switch_stop_enabled_property.setDefaultValue(constants::left_switch_stop_enabled_default);
+
+  modular_server::Property & right_switch_stop_enabled_property = modular_server_.property(step_dir_controller::constants::right_switch_stop_enabled_property_name);
+  right_switch_stop_enabled_property.setDefaultValue(constants::right_switch_stop_enabled_default);
+
+  modular_server::Property & switch_soft_stop_enabled_property = modular_server_.property(step_dir_controller::constants::switch_soft_stop_enabled_property_name);
+  switch_soft_stop_enabled_property.setDefaultValue(constants::switch_soft_stop_enabled_default);
+
+  modular_server::Property & home_velocity_property = modular_server_.property(step_dir_controller::constants::home_velocity_property_name);
+  home_velocity_property.setDefaultValue(constants::home_velocity_default);
+
+  modular_server::Property & run_current_property = modular_server_.createProperty(constants::run_current_property_name,constants::run_current_default);
+  run_current_property.setUnits(constants::percent_units);
+  run_current_property.setRange(constants::percent_min,constants::percent_max);
+  run_current_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setRunCurrentHandler));
+
+  modular_server::Property & hold_current_property = modular_server_.createProperty(constants::hold_current_property_name,constants::hold_current_default);
+  hold_current_property.setUnits(constants::percent_units);
+  hold_current_property.setRange(constants::percent_min,constants::percent_max);
+  hold_current_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setHoldCurrentHandler));
+
+  modular_server::Property & hold_delay_property = modular_server_.createProperty(constants::hold_delay_property_name,constants::hold_delay_default);
+  hold_delay_property.setUnits(constants::percent_units);
+  hold_delay_property.setRange(constants::percent_min,constants::percent_max);
+  hold_delay_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setHoldDelayHandler));
 
   modular_server::Property & microsteps_per_step_property = modular_server_.createProperty(constants::microsteps_per_step_property_name,constants::microsteps_per_step_default);
   microsteps_per_step_property.setSubset(constants::microsteps_per_step_subset);
@@ -62,15 +96,16 @@ void StepperController::setup()
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
 
   // Functions
-  modular_server::Function & minimize_current_function = modular_server_.createFunction(constants::minimize_current_function_name);
-  minimize_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::minimizeCurrentHandler));
-  minimize_current_function.addParameter(channel_parameter);
+  modular_server::Function & minimize_hold_current_function = modular_server_.createFunction(constants::minimize_hold_current_function_name);
+  minimize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::minimizeHoldCurrentHandler));
+  minimize_hold_current_function.addParameter(channel_parameter);
 
-  modular_server::Function & restore_current_function = modular_server_.createFunction(constants::restore_current_function_name);
-  restore_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreCurrentHandler));
-  restore_current_function.addParameter(channel_parameter);
+  modular_server::Function & restore_hold_current_function = modular_server_.createFunction(constants::restore_hold_current_function_name);
+  restore_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreHoldCurrentHandler));
+  restore_hold_current_function.addParameter(channel_parameter);
 
   // Callbacks
+
 }
 
 void StepperController::reinitialize()
@@ -78,28 +113,26 @@ void StepperController::reinitialize()
   StepDirController::reinitialize();
   for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
   {
-    Driver & driver = drivers_[driver_i];
-    driver.setStepDirInput();
-    driver.setDefaultChopperConfig();
-    driver.disableCoolStep();
-    setCurrentScaleHandler(driver_i);
     setMicrostepsPerStepHandler(driver_i);
+    setRunCurrentHandler(driver_i);
+    setHoldCurrentHandler(driver_i);
+    setHoldDelayHandler(driver_i);
   }
 }
 
-void StepperController::minimizeCurrent(const size_t channel)
+void StepperController::minimizeHoldCurrent(const size_t channel)
 {
   if (channel < constants::DRIVER_COUNT)
   {
-    drivers_[channel].setCurrentScalePercent(constants::current_scale_min);
+    drivers_[channel].setHoldCurrent(constants::percent_min);
   }
 }
 
-void StepperController::restoreCurrent(const size_t channel)
+void StepperController::restoreHoldCurrent(const size_t channel)
 {
   if (channel < constants::DRIVER_COUNT)
   {
-    setCurrentScaleHandler(channel);
+    setHoldCurrentHandler(channel);
   }
 }
 
@@ -142,13 +175,31 @@ double StepperController::positionUnitsToSteps(const size_t channel, const doubl
 // modular_server_.property(property_name).getElementValue(element_index,value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(element_index,value) value type must match the property array element default type
 
-void StepperController::setCurrentScaleHandler(const size_t channel)
+void StepperController::setRunCurrentHandler(const size_t channel)
 {
-  modular_server::Property & current_scale_property = modular_server_.property(constants::current_scale_property_name);
-  long current_scale;
-  current_scale_property.getElementValue(channel,current_scale);
+  modular_server::Property & run_current_property = modular_server_.property(constants::run_current_property_name);
+  long run_current;
+  run_current_property.getElementValue(channel,run_current);
 
-  drivers_[channel].setCurrentScalePercent(current_scale);
+  drivers_[channel].setRunCurrent(run_current);
+}
+
+void StepperController::setHoldCurrentHandler(const size_t channel)
+{
+  modular_server::Property & hold_current_property = modular_server_.property(constants::hold_current_property_name);
+  long hold_current;
+  hold_current_property.getElementValue(channel,hold_current);
+
+  drivers_[channel].setHoldCurrent(hold_current);
+}
+
+void StepperController::setHoldDelayHandler(const size_t channel)
+{
+  modular_server::Property & hold_delay_property = modular_server_.property(constants::hold_delay_property_name);
+  long hold_delay;
+  hold_delay_property.getElementValue(channel,hold_delay);
+
+  drivers_[channel].setHoldDelay(hold_delay);
 }
 
 void StepperController::preSetMicrostepsPerStepHandler(const size_t channel)
@@ -172,16 +223,16 @@ void StepperController::setMicrostepsPerStepHandler(const size_t channel)
   driver.setMicrostepsPerStep(microsteps_per_step);
 }
 
-void StepperController::minimizeCurrentHandler()
+void StepperController::minimizeHoldCurrentHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  minimizeCurrent(channel);
+  minimizeHoldCurrent(channel);
 }
 
-void StepperController::restoreCurrentHandler()
+void StepperController::restoreHoldCurrentHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  restoreCurrent(channel);
+  restoreHoldCurrent(channel);
 }
