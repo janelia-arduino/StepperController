@@ -18,6 +18,7 @@ void StepperController::setup()
 {
   // Parent Setup
   StepDirController::setup();
+  setChannelCount(constants::DRIVER_COUNT);
 
   // Driver Setup
   for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
@@ -94,6 +95,7 @@ void StepperController::setup()
 
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
+  channel_parameter.setRange(step_dir_controller::constants::channel_min,(long)(constants::DRIVER_COUNT - 1));
 
   // Functions
   modular_server::Function & minimize_hold_current_function = modular_server_.createFunction(constants::minimize_hold_current_function_name);
@@ -118,6 +120,7 @@ void StepperController::reinitialize()
     setHoldCurrentHandler(driver_i);
     setHoldDelayHandler(driver_i);
   }
+  enableAll();
 }
 
 void StepperController::minimizeHoldCurrent(const size_t channel)

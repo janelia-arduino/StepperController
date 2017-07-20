@@ -32,11 +32,11 @@ CONSTANT_STRING(percent_units,"%");
 // Properties
 const double steps_per_position_units_element_default = 200;
 
-const double velocity_max_element_default = step_dir_controller::constants::velocity_max_element_default;
+const double velocity_max_element_default = 3.9;
 
-const double velocity_min_element_default = step_dir_controller::constants::velocity_min_element_default;
+const double velocity_min_element_default = 0.39;
 
-const double acceleration_max_element_default = step_dir_controller::constants::acceleration_max_element_default;
+const double acceleration_max_element_default = 3.9;
 
 const ConstantString * const enable_polarity_element_default = &step_dir_controller::constants::polarity_low;
 
@@ -46,15 +46,15 @@ const bool right_switch_stop_enabled_element_default = false;
 
 const bool switch_soft_stop_enabled_element_default = false;
 
-const double home_velocity_element_default = step_dir_controller::constants::home_velocity_element_default;
+const double home_velocity_element_default = -0.5;
 
 CONSTANT_STRING(run_current_property_name,"runCurrent");
 const long percent_min = 0;
 const long percent_max = 100;
-const long run_current_element_default = 50;
+const long run_current_element_default = 20;
 
 CONSTANT_STRING(hold_current_property_name,"holdCurrent");
-const long hold_current_element_default = 25;
+const long hold_current_element_default = 10;
 
 CONSTANT_STRING(hold_delay_property_name,"holdDelay");
 const long hold_delay_element_default = 50;
