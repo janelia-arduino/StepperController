@@ -115,6 +115,7 @@ void StepperController::reinitialize()
   StepDirController::reinitialize();
   for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
   {
+    drivers_[driver_i].initialize();
     setMicrostepsPerStepHandler(driver_i);
     setRunCurrentHandler(driver_i);
     setHoldCurrentHandler(driver_i);
