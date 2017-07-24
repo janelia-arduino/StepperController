@@ -18,13 +18,26 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=1};
-enum{FUNCTION_COUNT_MAX=2};
+enum{FUNCTION_COUNT_MAX=3};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
 
 extern ConstantString firmware_name;
 extern const modular_server::FirmwareInfo firmware_info;
+
+extern ConstantString communicating_string;
+extern ConstantString load_string;
+extern ConstantString full_step_active_string;
+extern ConstantString current_scaling_string;
+extern ConstantString stall_string;
+extern ConstantString over_temperature_shutdown_string;
+extern ConstantString over_temperature_warning_string;
+extern ConstantString short_to_ground_a_string;
+extern ConstantString short_to_ground_b_string;
+extern ConstantString open_load_a_string;
+extern ConstantString open_load_b_string;
+extern ConstantString standstill_string;
 
 // Interrupts
 
@@ -69,6 +82,7 @@ extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PE
 // Parameters
 
 // Functions
+extern ConstantString get_drivers_status_function_name;
 extern ConstantString minimize_hold_current_function_name;
 extern ConstantString restore_hold_current_function_name;
 

@@ -98,6 +98,9 @@ void StepperController::setup()
   channel_parameter.setRange(step_dir_controller::constants::channel_min,(long)(constants::DRIVER_COUNT - 1));
 
   // Functions
+  modular_server::Function & get_drivers_status_function = modular_server_.createFunction(constants::get_drivers_status_function_name);
+  get_drivers_status_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::getDriversStatusHandler));
+
   modular_server::Function & minimize_hold_current_function = modular_server_.createFunction(constants::minimize_hold_current_function_name);
   minimize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::minimizeHoldCurrentHandler));
   minimize_hold_current_function.addParameter(channel_parameter);
@@ -225,6 +228,40 @@ void StepperController::setMicrostepsPerStepHandler(const size_t channel)
 
   Driver & driver = drivers_[channel];
   driver.setMicrostepsPerStep(microsteps_per_step);
+}
+
+void StepperController::getDriversStatusHandler()
+{
+  modular_server_.response().writeResultKey();
+
+  modular_server_.response().beginArray();
+
+  for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
+  {
+    modular_server_.response().beginObject();
+
+    Driver & driver = drivers_[driver_i];
+    modular_server_.response().write(constants::communicating_string,driver.communicating());
+
+    TMC2130::Status status = driver.getStatus();
+    long load_percent = map(status.load,0,TMC2130::LOAD_MAX,constants::percent_min,constants::percent_max);
+    modular_server_.response().write(constants::load_string,load_percent);
+    modular_server_.response().write(constants::full_step_active_string,status.full_step_active);
+    long current_scaling_percent = map(status.current_scaling,0,TMC2130::CURRENT_SCALING_MAX,constants::percent_min,constants::percent_max);
+    modular_server_.response().write(constants::current_scaling_string,current_scaling_percent);
+    modular_server_.response().write(constants::stall_string,status.stall);
+    modular_server_.response().write(constants::over_temperature_shutdown_string,status.over_temperature_shutdown);
+    modular_server_.response().write(constants::over_temperature_warning_string,status.over_temperature_warning);
+    modular_server_.response().write(constants::short_to_ground_a_string,status.short_to_ground_a);
+    modular_server_.response().write(constants::short_to_ground_b_string,status.short_to_ground_b);
+    modular_server_.response().write(constants::open_load_a_string,status.open_load_a);
+    modular_server_.response().write(constants::open_load_b_string,status.open_load_b);
+    modular_server_.response().write(constants::standstill_string,status.standstill);
+
+    modular_server_.response().endObject();
+  }
+
+  modular_server_.response().endArray();
 }
 
 void StepperController::minimizeHoldCurrentHandler()

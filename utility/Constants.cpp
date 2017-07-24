@@ -24,6 +24,19 @@ const modular_server::FirmwareInfo firmware_info =
     .version_patch=0,
   };
 
+CONSTANT_STRING(communicating_string,"communicating");
+CONSTANT_STRING(load_string,"load");
+CONSTANT_STRING(full_step_active_string,"full_step_active");
+CONSTANT_STRING(current_scaling_string,"current_scaling");
+CONSTANT_STRING(stall_string,"stall");
+CONSTANT_STRING(over_temperature_shutdown_string,"over_temperature_shutdown");
+CONSTANT_STRING(over_temperature_warning_string,"over_temperature_warning");
+CONSTANT_STRING(short_to_ground_a_string,"short_to_ground_a");
+CONSTANT_STRING(short_to_ground_b_string,"short_to_ground_b");
+CONSTANT_STRING(open_load_a_string,"open_load_a");
+CONSTANT_STRING(open_load_b_string,"open_load_b");
+CONSTANT_STRING(standstill_string,"standstill");
+
 // Interrupts
 
 // Units
@@ -76,6 +89,7 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
 // Parameters
 
 // Functions
+CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
 CONSTANT_STRING(minimize_hold_current_function_name,"minimizeHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
 

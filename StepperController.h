@@ -66,6 +66,7 @@ private:
   void preSetMicrostepsPerStepHandler(const size_t channel);
   void postSetMicrostepsPerStepHandler(const size_t channel);
   void setMicrostepsPerStepHandler(const size_t channel);
+  void getDriversStatusHandler();
   void minimizeHoldCurrentHandler();
   void restoreHoldCurrentHandler();
 
