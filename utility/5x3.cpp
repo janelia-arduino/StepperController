@@ -89,6 +89,13 @@ const double home_velocity_default[DRIVER_COUNT] =
     home_velocity_element_default,
   };
 
+const bool invert_driver_direction_default[DRIVER_COUNT] =
+  {
+    invert_driver_direction_element_default,
+    invert_driver_direction_element_default,
+    invert_driver_direction_element_default,
+  };
+
 const long run_current_default[DRIVER_COUNT] =
   {
     run_current_element_default,

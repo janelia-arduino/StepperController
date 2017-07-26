@@ -44,6 +44,8 @@ extern const bool switch_soft_stop_enabled_default[DRIVER_COUNT];
 
 extern const double home_velocity_default[DRIVER_COUNT];
 
+extern const bool invert_driver_direction_default[DRIVER_COUNT];
+
 extern const long run_current_default[DRIVER_COUNT];
 
 extern const long hold_current_default[DRIVER_COUNT];

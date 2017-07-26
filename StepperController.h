@@ -60,6 +60,7 @@ private:
   Driver drivers_[stepper_controller::constants::DRIVER_COUNT];
 
   // Handlers
+  void invertDriverDirectionHandler(const size_t channel);
   void setRunCurrentHandler(const size_t channel);
   void setHoldCurrentHandler(const size_t channel);
   void setHoldDelayHandler(const size_t channel);

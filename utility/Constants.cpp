@@ -61,6 +61,9 @@ const bool switch_soft_stop_enabled_element_default = false;
 
 const double home_velocity_element_default = -0.5;
 
+CONSTANT_STRING(invert_driver_direction_property_name,"invertDriverDirection");
+const bool invert_driver_direction_element_default = true;
+
 CONSTANT_STRING(run_current_property_name,"runCurrent");
 const long percent_min = 0;
 const long percent_max = 100;

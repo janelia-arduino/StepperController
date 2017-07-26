@@ -71,6 +71,9 @@ void StepperController::setup()
   modular_server::Property & home_velocity_property = modular_server_.property(step_dir_controller::constants::home_velocity_property_name);
   home_velocity_property.setDefaultValue(constants::home_velocity_default);
 
+  modular_server::Property & invert_driver_direction_property = modular_server_.createProperty(constants::invert_driver_direction_property_name,constants::invert_driver_direction_default);
+  invert_driver_direction_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::invertDriverDirectionHandler));
+
   modular_server::Property & run_current_property = modular_server_.createProperty(constants::run_current_property_name,constants::run_current_default);
   run_current_property.setUnits(constants::percent_units);
   run_current_property.setRange(constants::percent_min,constants::percent_max);
@@ -120,6 +123,7 @@ void StepperController::reinitialize()
   {
     drivers_[driver_i].initialize();
     setMicrostepsPerStepHandler(driver_i);
+    invertDriverDirectionHandler(driver_i);
     setRunCurrentHandler(driver_i);
     setHoldCurrentHandler(driver_i);
     setHoldDelayHandler(driver_i);
@@ -181,6 +185,22 @@ double StepperController::positionUnitsToSteps(const size_t channel, const doubl
 // modular_server_.property(property_name).setValue(value) value type must match the property default type
 // modular_server_.property(property_name).getElementValue(element_index,value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(element_index,value) value type must match the property array element default type
+
+void StepperController::invertDriverDirectionHandler(const size_t channel)
+{
+  modular_server::Property & invert_driver_direction_property = modular_server_.property(constants::invert_driver_direction_property_name);
+  bool invert_driver_direction;
+  invert_driver_direction_property.getElementValue(channel,invert_driver_direction);
+
+  if (invert_driver_direction)
+  {
+    drivers_[channel].enableInverseMotorDirection();
+  }
+  else
+  {
+    drivers_[channel].disableInverseMotorDirection();
+  }
+}
 
 void StepperController::setRunCurrentHandler(const size_t channel)
 {

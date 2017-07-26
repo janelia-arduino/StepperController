@@ -16,7 +16,7 @@ namespace stepper_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=4};
+enum{PROPERTY_COUNT_MAX=5};
 enum{PARAMETER_COUNT_MAX=1};
 enum{FUNCTION_COUNT_MAX=3};
 enum{CALLBACK_COUNT_MAX=1};
@@ -63,6 +63,9 @@ extern const bool right_switch_stop_enabled_element_default;
 extern const bool switch_soft_stop_enabled_element_default;
 
 extern const double home_velocity_element_default;
+
+extern ConstantString invert_driver_direction_property_name;
+extern const bool invert_driver_direction_element_default;
 
 extern ConstantString run_current_property_name;
 extern const long percent_min;
