@@ -192,13 +192,14 @@ void StepperController::invertDriverDirectionHandler(const size_t channel)
   bool invert_driver_direction;
   invert_driver_direction_property.getElementValue(channel,invert_driver_direction);
 
+  // TMC2130 direction is backwards from other drivers
   if (invert_driver_direction)
   {
-    drivers_[channel].enableInverseMotorDirection();
+    drivers_[channel].disableInverseMotorDirection();
   }
   else
   {
-    drivers_[channel].disableInverseMotorDirection();
+    drivers_[channel].enableInverseMotorDirection();
   }
 }
 
