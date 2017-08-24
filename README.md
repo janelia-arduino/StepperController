@@ -24,34 +24,33 @@ License:
 
 [stepper_controller](https://github.com/janelia-modular-devices/stepper_controller.git)
 
-## API
+## API NAMES
 
 ```json
 {
   "id":"getApi",
   "result":{
     "firmware":["StepperController"],
+    "verbosity":"NAMES",
     "functions":[
       "getDriversStatus",
       "minimizeHoldCurrent",
       "restoreHoldCurrent"
     ],
-    "parameters":[],
     "properties":[
       "invertDriverDirection",
       "runCurrent",
       "holdCurrent",
       "holdDelay",
       "microstepsPerStep"
-    ],
-    "callbacks":[]
+    ]
   }
 }
 ```
 
-## API Verbose
+## API GENERAL
 
-[API Verbose](./api.json)
+[API GENERAL](./api/)
 
 ## More Detailed Modular Device Information
 

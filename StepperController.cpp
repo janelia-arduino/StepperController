@@ -103,6 +103,8 @@ void StepperController::setup()
   // Functions
   modular_server::Function & get_drivers_status_function = modular_server_.createFunction(constants::get_drivers_status_function_name);
   get_drivers_status_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::getDriversStatusHandler));
+  get_drivers_status_function.setResultTypeArray();
+  get_drivers_status_function.setResultTypeObject();
 
   modular_server::Function & minimize_hold_current_function = modular_server_.createFunction(constants::minimize_hold_current_function_name);
   minimize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::minimizeHoldCurrentHandler));
