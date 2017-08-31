@@ -26,13 +26,13 @@ extern const size_t cs_pins[DRIVER_COUNT];
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
-extern const double steps_per_position_units_default[DRIVER_COUNT];
+extern const long steps_per_position_units_default[DRIVER_COUNT];
 
-extern const double velocity_max_default[DRIVER_COUNT];
+extern const long velocity_max_default[DRIVER_COUNT];
 
-extern const double velocity_min_default[DRIVER_COUNT];
+extern const long velocity_min_default[DRIVER_COUNT];
 
-extern const double acceleration_max_default[DRIVER_COUNT];
+extern const long acceleration_max_default[DRIVER_COUNT];
 
 extern const ConstantString * const enable_polarity_default[DRIVER_COUNT];
 
@@ -42,7 +42,7 @@ extern const bool right_switch_stop_enabled_default[DRIVER_COUNT];
 
 extern const bool switch_soft_stop_enabled_default[DRIVER_COUNT];
 
-extern const double home_velocity_default[DRIVER_COUNT];
+extern const long home_velocity_default[DRIVER_COUNT];
 
 extern const bool invert_driver_direction_default[DRIVER_COUNT];
 

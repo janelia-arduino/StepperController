@@ -19,7 +19,7 @@ CONSTANT_STRING(firmware_name,"StepperController");
 const modular_server::FirmwareInfo firmware_info =
   {
     .name_ptr=&firmware_name,
-    .version_major=1,
+    .version_major=2,
     .version_minor=0,
     .version_patch=0,
   };
@@ -43,13 +43,14 @@ CONSTANT_STRING(standstill_string,"standstill");
 CONSTANT_STRING(percent_units,"%");
 
 // Properties
-const double steps_per_position_units_element_default = 200;
+// 1600 steps per rev with a 200 step count motor at 256 microsteps per step
+const long steps_per_position_units_element_default = 32;
 
-const double velocity_max_element_default = 3.9;
+const long velocity_max_element_default = 6250;
 
-const double velocity_min_element_default = 0.39;
+const long velocity_min_element_default = 625;
 
-const double acceleration_max_element_default = 3.9;
+const long acceleration_max_element_default = 6250;
 
 const ConstantString * const enable_polarity_element_default = &step_dir_controller::constants::polarity_low;
 
@@ -59,7 +60,7 @@ const bool right_switch_stop_enabled_element_default = false;
 
 const bool switch_soft_stop_enabled_element_default = false;
 
-const double home_velocity_element_default = -0.5;
+const long home_velocity_element_default = -1600;
 
 CONSTANT_STRING(invert_driver_direction_property_name,"invertDriverDirection");
 const bool invert_driver_direction_element_default = false;

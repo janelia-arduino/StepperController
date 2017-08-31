@@ -46,13 +46,13 @@ extern ConstantString percent_units;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
-extern const double steps_per_position_units_element_default;
+extern const long steps_per_position_units_element_default;
 
-extern const double velocity_max_element_default;
+extern const long velocity_max_element_default;
 
-extern const double velocity_min_element_default;
+extern const long velocity_min_element_default;
 
-extern const double acceleration_max_element_default;
+extern const long acceleration_max_element_default;
 
 extern const ConstantString * const enable_polarity_element_default;
 
@@ -62,7 +62,7 @@ extern const bool right_switch_stop_enabled_element_default;
 
 extern const bool switch_soft_stop_enabled_element_default;
 
-extern const double home_velocity_element_default;
+extern const long home_velocity_element_default;
 
 extern ConstantString invert_driver_direction_property_name;
 extern const bool invert_driver_direction_element_default;

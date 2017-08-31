@@ -26,28 +26,28 @@ const size_t cs_pins[DRIVER_COUNT] =
 // Units
 
 // Properties
-const double steps_per_position_units_default[DRIVER_COUNT] =
+const long steps_per_position_units_default[DRIVER_COUNT] =
   {
     steps_per_position_units_element_default,
     steps_per_position_units_element_default,
     steps_per_position_units_element_default,
   };
 
-const double velocity_max_default[DRIVER_COUNT] =
+const long velocity_max_default[DRIVER_COUNT] =
   {
     velocity_max_element_default,
     velocity_max_element_default,
     velocity_max_element_default,
   };
 
-const double velocity_min_default[DRIVER_COUNT] =
+const long velocity_min_default[DRIVER_COUNT] =
   {
     velocity_min_element_default,
     velocity_min_element_default,
     velocity_min_element_default,
   };
 
-const double acceleration_max_default[DRIVER_COUNT] =
+const long acceleration_max_default[DRIVER_COUNT] =
   {
     acceleration_max_element_default,
     acceleration_max_element_default,
@@ -82,7 +82,7 @@ const bool switch_soft_stop_enabled_default[DRIVER_COUNT] =
     switch_soft_stop_enabled_element_default,
   };
 
-const double home_velocity_default[DRIVER_COUNT] =
+const long home_velocity_default[DRIVER_COUNT] =
   {
     home_velocity_element_default,
     home_velocity_element_default,

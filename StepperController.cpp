@@ -149,28 +149,6 @@ void StepperController::restoreHoldCurrent(const size_t channel)
   }
 }
 
-double StepperController::stepsToPositionUnits(const size_t channel, const double steps)
-{
-  double position_units = StepDirController::stepsToPositionUnits(channel,steps);
-
-  modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
-  long microsteps_per_step;
-  microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
-
-  return position_units/microsteps_per_step;
-}
-
-double StepperController::positionUnitsToSteps(const size_t channel, const double position_units)
-{
-  double steps = StepDirController::positionUnitsToSteps(channel,position_units);
-
-  modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
-  long microsteps_per_step;
-  microsteps_per_step_property.getElementValue(channel,microsteps_per_step);
-
-  return steps*microsteps_per_step;
-}
-
 // Handlers must be non-blocking (avoid 'delay')
 //
 // modular_server_.parameter(parameter_name).getValue(value) value type must be either:

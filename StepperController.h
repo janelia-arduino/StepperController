@@ -46,10 +46,6 @@ public:
   void minimizeHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
-protected:
-  virtual double stepsToPositionUnits(const size_t channel, const double steps);
-  virtual double positionUnitsToSteps(const size_t channel, const double position_units);
-
 private:
   modular_server::Property properties_[stepper_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[stepper_controller::constants::PARAMETER_COUNT_MAX];
