@@ -18,13 +18,13 @@ void StepperController::setup()
 {
   // Parent Setup
   StepDirController::setup();
-  setChannelCount(constants::DRIVER_COUNT);
+  // setControllerCount(constants::controller_count);
 
   // Driver Setup
-  for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
-    Driver & driver = drivers_[driver_i];
-    driver.setup(constants::cs_pins[driver_i]);
+    Driver & driver = drivers_[channel];
+    driver.setup(constants::cs_pins[channel]);
   }
 
   // Pin Setup
@@ -44,32 +44,39 @@ void StepperController::setup()
                               callbacks_);
 
   // Properties
-  modular_server::Property & steps_per_position_units_property = modular_server_.property(step_dir_controller::constants::steps_per_position_units_property_name);
-  steps_per_position_units_property.setDefaultValue(constants::steps_per_position_units_default);
+  // modular_server::Property & channel_count_property = modular_server_.property(step_dir_controller::constants::channel_count_property_name);
+  // channel_count_property.disableFunctors();
+  // channel_count_property.setDefaultValue((long)constants::CHANNEL_COUNT_MAX);
+  // channel_count_property.setRange(step_dir_controller::constants::channel_count_min,constants::CHANNEL_COUNT_MAX);
+  // channel_count_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setChannelCountHandler));
+  // channel_count_property.reenableFunctors();
 
-  modular_server::Property & velocity_max_property = modular_server_.property(step_dir_controller::constants::velocity_max_property_name);
-  velocity_max_property.setDefaultValue(constants::velocity_max_default);
+  // modular_server::Property & steps_per_position_units_property = modular_server_.property(step_dir_controller::constants::steps_per_position_units_property_name);
+  // steps_per_position_units_property.setDefaultValue(constants::steps_per_position_units_default);
 
-  modular_server::Property & velocity_min_property = modular_server_.property(step_dir_controller::constants::velocity_min_property_name);
-  velocity_min_property.setDefaultValue(constants::velocity_min_default);
+  // modular_server::Property & velocity_max_property = modular_server_.property(step_dir_controller::constants::velocity_max_property_name);
+  // velocity_max_property.setDefaultValue(constants::velocity_max_default);
 
-  modular_server::Property & acceleration_max_property = modular_server_.property(step_dir_controller::constants::acceleration_max_property_name);
-  acceleration_max_property.setDefaultValue(constants::acceleration_max_default);
+  // modular_server::Property & velocity_min_property = modular_server_.property(step_dir_controller::constants::velocity_min_property_name);
+  // velocity_min_property.setDefaultValue(constants::velocity_min_default);
 
-  modular_server::Property & enable_polarity_property = modular_server_.property(step_dir_controller::constants::enable_polarity_property_name);
-  enable_polarity_property.setDefaultValue(constants::enable_polarity_default);
+  // modular_server::Property & acceleration_max_property = modular_server_.property(step_dir_controller::constants::acceleration_max_property_name);
+  // acceleration_max_property.setDefaultValue(constants::acceleration_max_default);
 
-  modular_server::Property & left_switch_stop_enabled_property = modular_server_.property(step_dir_controller::constants::left_switch_stop_enabled_property_name);
-  left_switch_stop_enabled_property.setDefaultValue(constants::left_switch_stop_enabled_default);
+  // modular_server::Property & enable_polarity_property = modular_server_.property(step_dir_controller::constants::enable_polarity_property_name);
+  // enable_polarity_property.setDefaultValue(constants::enable_polarity_default);
 
-  modular_server::Property & right_switch_stop_enabled_property = modular_server_.property(step_dir_controller::constants::right_switch_stop_enabled_property_name);
-  right_switch_stop_enabled_property.setDefaultValue(constants::right_switch_stop_enabled_default);
+  // modular_server::Property & left_switch_stop_enabled_property = modular_server_.property(step_dir_controller::constants::left_switch_stop_enabled_property_name);
+  // left_switch_stop_enabled_property.setDefaultValue(constants::left_switch_stop_enabled_default);
 
-  modular_server::Property & switch_soft_stop_enabled_property = modular_server_.property(step_dir_controller::constants::switch_soft_stop_enabled_property_name);
-  switch_soft_stop_enabled_property.setDefaultValue(constants::switch_soft_stop_enabled_default);
+  // modular_server::Property & right_switch_stop_enabled_property = modular_server_.property(step_dir_controller::constants::right_switch_stop_enabled_property_name);
+  // right_switch_stop_enabled_property.setDefaultValue(constants::right_switch_stop_enabled_default);
 
-  modular_server::Property & home_velocity_property = modular_server_.property(step_dir_controller::constants::home_velocity_property_name);
-  home_velocity_property.setDefaultValue(constants::home_velocity_default);
+  // modular_server::Property & switch_soft_stop_enabled_property = modular_server_.property(step_dir_controller::constants::switch_soft_stop_enabled_property_name);
+  // switch_soft_stop_enabled_property.setDefaultValue(constants::switch_soft_stop_enabled_default);
+
+  // modular_server::Property & home_velocity_property = modular_server_.property(step_dir_controller::constants::home_velocity_property_name);
+  // home_velocity_property.setDefaultValue(constants::home_velocity_default);
 
   modular_server::Property & invert_driver_direction_property = modular_server_.createProperty(constants::invert_driver_direction_property_name,constants::invert_driver_direction_default);
   invert_driver_direction_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::invertDriverDirectionHandler));
@@ -94,11 +101,11 @@ void StepperController::setup()
   microsteps_per_step_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::preSetMicrostepsPerStepHandler));
   microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::postSetMicrostepsPerStepHandler));
 
-  reinitialize();
-
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
-  channel_parameter.setRange(step_dir_controller::constants::channel_min,(long)(constants::DRIVER_COUNT - 1));
+
+  setChannelCountHandler();
+  reinitialize();
 
   // Functions
   modular_server::Function & get_drivers_status_function = modular_server_.createFunction(constants::get_drivers_status_function_name);
@@ -121,21 +128,28 @@ void StepperController::setup()
 void StepperController::reinitialize()
 {
   StepDirController::reinitialize();
-  for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
+
+  long channel_count;
+  modular_server_.property(step_dir_controller::constants::channel_count_property_name).getValue(channel_count);
+
+  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
   {
-    drivers_[driver_i].initialize();
-    setMicrostepsPerStepHandler(driver_i);
-    invertDriverDirectionHandler(driver_i);
-    setRunCurrentHandler(driver_i);
-    setHoldCurrentHandler(driver_i);
-    setHoldDelayHandler(driver_i);
+    drivers_[channel].initialize();
+    setMicrostepsPerStepHandler(channel);
+    invertDriverDirectionHandler(channel);
+    setRunCurrentHandler(channel);
+    setHoldCurrentHandler(channel);
+    setHoldDelayHandler(channel);
   }
   enableAll();
 }
 
 void StepperController::minimizeHoldCurrent(const size_t channel)
 {
-  if (channel < constants::DRIVER_COUNT)
+  long channel_count;
+  modular_server_.property(step_dir_controller::constants::channel_count_property_name).getValue(channel_count);
+
+  if (channel < (size_t)channel_count)
   {
     drivers_[channel].setHoldCurrent(constants::percent_min);
   }
@@ -143,7 +157,10 @@ void StepperController::minimizeHoldCurrent(const size_t channel)
 
 void StepperController::restoreHoldCurrent(const size_t channel)
 {
-  if (channel < constants::DRIVER_COUNT)
+  long channel_count;
+  modular_server_.property(step_dir_controller::constants::channel_count_property_name).getValue(channel_count);
+
+  if (channel < (size_t)channel_count)
   {
     setHoldCurrentHandler(channel);
   }
@@ -165,6 +182,30 @@ void StepperController::restoreHoldCurrent(const size_t channel)
 // modular_server_.property(property_name).setValue(value) value type must match the property default type
 // modular_server_.property(property_name).getElementValue(element_index,value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(element_index,value) value type must match the property array element default type
+
+void StepperController::setChannelCountHandler()
+{
+  StepDirController::setChannelCountHandler();
+
+  long channel_count;
+  modular_server_.property(step_dir_controller::constants::channel_count_property_name).getValue(channel_count);
+
+  modular_server::Property & invert_driver_direction_property = modular_server_.property(constants::invert_driver_direction_property_name);
+  invert_driver_direction_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & run_current_property = modular_server_.property(constants::run_current_property_name);
+  run_current_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & hold_current_property = modular_server_.property(constants::hold_current_property_name);
+  hold_current_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & hold_delay_property = modular_server_.property(constants::hold_delay_property_name);
+  hold_delay_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
+  microsteps_per_step_property.setArrayLengthRange(channel_count,channel_count);
+
+}
 
 void StepperController::invertDriverDirectionHandler(const size_t channel)
 {
@@ -237,11 +278,14 @@ void StepperController::getDriversStatusHandler()
 
   modular_server_.response().beginArray();
 
-  for (size_t driver_i=0; driver_i<constants::DRIVER_COUNT; ++driver_i)
+  long channel_count;
+  modular_server_.property(step_dir_controller::constants::channel_count_property_name).getValue(channel_count);
+
+  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
   {
     modular_server_.response().beginObject();
 
-    Driver & driver = drivers_[driver_i];
+    Driver & driver = drivers_[channel];
     modular_server_.response().write(constants::communicating_string,driver.communicating());
 
     TMC2130::Status status = driver.getStatus();

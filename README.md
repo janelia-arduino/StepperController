@@ -27,25 +27,7 @@ License:
 ## API NAMES
 
 ```json
-{
-  "id":"getApi",
-  "result":{
-    "firmware":["StepperController"],
-    "verbosity":"NAMES",
-    "functions":[
-      "getDriversStatus",
-      "minimizeHoldCurrent",
-      "restoreHoldCurrent"
-    ],
-    "properties":[
-      "invertDriverDirection",
-      "runCurrent",
-      "holdCurrent",
-      "holdDelay",
-      "microstepsPerStep"
-    ]
-  }
-}
+
 ```
 
 ## API GENERAL

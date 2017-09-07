@@ -26,6 +26,8 @@ extern ConstantString device_name;
 extern ConstantString firmware_name;
 extern const modular_server::FirmwareInfo firmware_info;
 
+extern const size_t controller_count;
+
 extern ConstantString communicating_string;
 extern ConstantString load_string;
 extern ConstantString full_step_active_string;

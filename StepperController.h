@@ -46,6 +46,10 @@ public:
   void minimizeHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
+protected:
+  // Handlers
+  void setChannelCountHandler();
+
 private:
   modular_server::Property properties_[stepper_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[stepper_controller::constants::PARAMETER_COUNT_MAX];
@@ -53,7 +57,7 @@ private:
   modular_server::Callback callbacks_[stepper_controller::constants::CALLBACK_COUNT_MAX];
 
   typedef TMC2130 Driver;
-  Driver drivers_[stepper_controller::constants::DRIVER_COUNT];
+  Driver drivers_[stepper_controller::constants::CHANNEL_COUNT_MAX];
 
   // Handlers
   void invertDriverDirectionHandler(const size_t channel);
