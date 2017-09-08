@@ -48,6 +48,8 @@ extern ConstantString percent_units;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern const long channel_count_default;
+
 extern const long steps_per_position_units_element_default;
 
 extern const long velocity_max_element_default;

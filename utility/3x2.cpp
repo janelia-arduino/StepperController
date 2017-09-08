@@ -26,6 +26,8 @@ const size_t cs_pins[CHANNEL_COUNT_MAX] =
 // Units
 
 // Properties
+const long channel_count_default = CHANNEL_COUNT_MAX;
+
 const long steps_per_position_units_default[CHANNEL_COUNT_MAX] =
   {
     steps_per_position_units_element_default,

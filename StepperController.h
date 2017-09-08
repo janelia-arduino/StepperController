@@ -43,6 +43,8 @@ public:
 
   virtual void reinitialize();
 
+  virtual size_t getChannelCount();
+
   void minimizeHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
