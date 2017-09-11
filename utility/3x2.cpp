@@ -14,6 +14,14 @@ namespace stepper_controller
 {
 namespace constants
 {
+const modular_server::HardwareInfo hardware_info =
+  {
+    .name_ptr=&hardware_name,
+    .part_number=1141,
+    .version_major=1,
+    .version_minor=0,
+  };
+
 const size_t controller_count = 1;
 
 const size_t cs_pins[CHANNEL_COUNT_MAX] =

@@ -33,6 +33,9 @@ void StepperController::setup()
   modular_server_.setDeviceName(constants::device_name);
 
   // Add Hardware
+  modular_server_.removeHardware();
+  modular_server_.addHardware(constants::hardware_info,
+                              interrupts_);
 
   // Interrupts
 
