@@ -45,8 +45,16 @@ public:
 
   virtual size_t getChannelCount();
 
-  void minimizeHoldCurrent(const size_t channel);
+  void enableAutomaticCurrentScaling(const size_t channel);
+  void disableAutomaticCurrentScaling(const size_t channel);
+
+  void zeroHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
+
+  void setZeroHoldCurrentNormalOperation(const size_t channel);
+  void setZeroHoldCurrentFreewheeling(const size_t channel);
+  void setZeroHoldCurrentBraking(const size_t channel);
+  void setZeroHoldCurrentIntenseBraking(const size_t channel);
 
 protected:
   // Handlers
@@ -72,8 +80,14 @@ private:
   void postSetMicrostepsPerStepHandler(const size_t channel);
   void setMicrostepsPerStepHandler(const size_t channel);
   void getDriversStatusHandler();
-  void minimizeHoldCurrentHandler();
+  void enableAutomaticCurrentScalingHandler();
+  void disableAutomaticCurrentScalingHandler();
+  void zeroHoldCurrentHandler();
   void restoreHoldCurrentHandler();
+  void setZeroHoldCurrentNormalOperationHandler();
+  void setZeroHoldCurrentFreewheelingHandler();
+  void setZeroHoldCurrentBrakingHandler();
+  void setZeroHoldCurrentIntenseBrakingHandler();
 
 };
 

@@ -116,13 +116,37 @@ void StepperController::setup()
   get_drivers_status_function.setResultTypeArray();
   get_drivers_status_function.setResultTypeObject();
 
-  modular_server::Function & minimize_hold_current_function = modular_server_.createFunction(constants::minimize_hold_current_function_name);
-  minimize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::minimizeHoldCurrentHandler));
-  minimize_hold_current_function.addParameter(channel_parameter);
+  modular_server::Function & enable_automatic_current_scaling_function = modular_server_.createFunction(constants::enable_automatic_current_scaling_function_name);
+  enable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::enableAutomaticCurrentScalingHandler));
+  enable_automatic_current_scaling_function.addParameter(channel_parameter);
+
+  modular_server::Function & disable_automatic_current_scaling_function = modular_server_.createFunction(constants::disable_automatic_current_scaling_function_name);
+  disable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::disableAutomaticCurrentScalingHandler));
+  disable_automatic_current_scaling_function.addParameter(channel_parameter);
+
+  modular_server::Function & zero_hold_current_function = modular_server_.createFunction(constants::zero_hold_current_function_name);
+  zero_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::zeroHoldCurrentHandler));
+  zero_hold_current_function.addParameter(channel_parameter);
 
   modular_server::Function & restore_hold_current_function = modular_server_.createFunction(constants::restore_hold_current_function_name);
   restore_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreHoldCurrentHandler));
   restore_hold_current_function.addParameter(channel_parameter);
+
+  modular_server::Function & set_zero_hold_current_normal_operation_function = modular_server_.createFunction(constants::set_zero_hold_current_normal_operation_function_name);
+  set_zero_hold_current_normal_operation_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentNormalOperationHandler));
+  set_zero_hold_current_normal_operation_function.addParameter(channel_parameter);
+
+  modular_server::Function & set_zero_hold_current_freewheeling_function = modular_server_.createFunction(constants::set_zero_hold_current_freewheeling_function_name);
+  set_zero_hold_current_freewheeling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentFreewheelingHandler));
+  set_zero_hold_current_freewheeling_function.addParameter(channel_parameter);
+
+  modular_server::Function & set_zero_hold_current_braking_function = modular_server_.createFunction(constants::set_zero_hold_current_braking_function_name);
+  set_zero_hold_current_braking_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentBrakingHandler));
+  set_zero_hold_current_braking_function.addParameter(channel_parameter);
+
+  modular_server::Function & set_zero_hold_current_intense_braking_function = modular_server_.createFunction(constants::set_zero_hold_current_intense_braking_function_name);
+  set_zero_hold_current_intense_braking_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentIntenseBrakingHandler));
+  set_zero_hold_current_intense_braking_function.addParameter(channel_parameter);
 
   // Callbacks
 
@@ -155,7 +179,23 @@ size_t StepperController::getChannelCount()
   return channel_count;
 }
 
-void StepperController::minimizeHoldCurrent(const size_t channel)
+void StepperController::enableAutomaticCurrentScaling(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].enableAutomaticCurrentScaling();
+  }
+}
+
+void StepperController::disableAutomaticCurrentScaling(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].disableAutomaticCurrentScaling();
+  }
+}
+
+void StepperController::zeroHoldCurrent(const size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -168,6 +208,38 @@ void StepperController::restoreHoldCurrent(const size_t channel)
   if (channel < getChannelCount())
   {
     setHoldCurrentHandler(channel);
+  }
+}
+
+void StepperController::setZeroHoldCurrentNormalOperation(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setZeroHoldCurrentNormalOperation();
+  }
+}
+
+void StepperController::setZeroHoldCurrentFreewheeling(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setZeroHoldCurrentFreewheeling();
+  }
+}
+
+void StepperController::setZeroHoldCurrentBraking(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setZeroHoldCurrentBraking();
+  }
+}
+
+void StepperController::setZeroHoldCurrentIntenseBraking(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setZeroHoldCurrentIntenseBraking();
   }
 }
 
@@ -310,11 +382,25 @@ void StepperController::getDriversStatusHandler()
   modular_server_.response().endArray();
 }
 
-void StepperController::minimizeHoldCurrentHandler()
+void StepperController::enableAutomaticCurrentScalingHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  minimizeHoldCurrent(channel);
+  enableAutomaticCurrentScaling(channel);
+}
+
+void StepperController::disableAutomaticCurrentScalingHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  disableAutomaticCurrentScaling(channel);
+}
+
+void StepperController::zeroHoldCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  zeroHoldCurrent(channel);
 }
 
 void StepperController::restoreHoldCurrentHandler()
@@ -322,4 +408,32 @@ void StepperController::restoreHoldCurrentHandler()
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
   restoreHoldCurrent(channel);
+}
+
+void StepperController::setZeroHoldCurrentNormalOperationHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  setZeroHoldCurrentNormalOperation(channel);
+}
+
+void StepperController::setZeroHoldCurrentFreewheelingHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  setZeroHoldCurrentFreewheeling(channel);
+}
+
+void StepperController::setZeroHoldCurrentBrakingHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  setZeroHoldCurrentBraking(channel);
+}
+
+void StepperController::setZeroHoldCurrentIntenseBrakingHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  setZeroHoldCurrentIntenseBraking(channel);
 }

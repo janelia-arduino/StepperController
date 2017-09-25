@@ -96,8 +96,14 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
 
 // Functions
 CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
-CONSTANT_STRING(minimize_hold_current_function_name,"minimizeHoldCurrent");
+CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticCurrentScaling");
+CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
+CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
+CONSTANT_STRING(set_zero_hold_current_normal_operation_function_name,"setZeroHoldCurrentNormalOperation");
+CONSTANT_STRING(set_zero_hold_current_freewheeling_function_name,"setZeroHoldCurrentFreewheeling");
+CONSTANT_STRING(set_zero_hold_current_braking_function_name,"setZeroHoldCurrentBraking");
+CONSTANT_STRING(set_zero_hold_current_intense_braking_function_name,"setZeroHoldCurrentIntenseBraking");
 
 // Callbacks
 

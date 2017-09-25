@@ -18,7 +18,7 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=5};
 enum{PARAMETER_COUNT_MAX=1};
-enum{FUNCTION_COUNT_MAX=3};
+enum{FUNCTION_COUNT_MAX=9};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -93,8 +93,14 @@ extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PE
 
 // Functions
 extern ConstantString get_drivers_status_function_name;
-extern ConstantString minimize_hold_current_function_name;
+extern ConstantString enable_automatic_current_scaling_function_name;
+extern ConstantString disable_automatic_current_scaling_function_name;
+extern ConstantString zero_hold_current_function_name;
 extern ConstantString restore_hold_current_function_name;
+extern ConstantString set_zero_hold_current_normal_operation_function_name;
+extern ConstantString set_zero_hold_current_freewheeling_function_name;
+extern ConstantString set_zero_hold_current_braking_function_name;
+extern ConstantString set_zero_hold_current_intense_braking_function_name;
 
 // Callbacks
 
