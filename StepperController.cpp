@@ -107,6 +107,10 @@ void StepperController::setup()
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
 
+  modular_server::Parameter & pwm_amplitude_parameter = modular_server_.createParameter(constants::pwm_amplitude_parameter_name);
+  pwm_amplitude_parameter.setUnits(constants::percent_units);
+  pwm_amplitude_parameter.setRange(constants::percent_min,constants::percent_max);
+
   setChannelCountHandler();
   reinitialize();
 
@@ -116,6 +120,11 @@ void StepperController::setup()
   get_drivers_status_function.setResultTypeArray();
   get_drivers_status_function.setResultTypeObject();
 
+  modular_server::Function & get_drivers_settings_function = modular_server_.createFunction(constants::get_drivers_settings_function_name);
+  get_drivers_settings_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::getDriversSettingsHandler));
+  get_drivers_settings_function.setResultTypeArray();
+  get_drivers_settings_function.setResultTypeObject();
+
   modular_server::Function & enable_automatic_current_scaling_function = modular_server_.createFunction(constants::enable_automatic_current_scaling_function_name);
   enable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::enableAutomaticCurrentScalingHandler));
   enable_automatic_current_scaling_function.addParameter(channel_parameter);
@@ -124,6 +133,20 @@ void StepperController::setup()
   disable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::disableAutomaticCurrentScalingHandler));
   disable_automatic_current_scaling_function.addParameter(channel_parameter);
 
+  modular_server::Function & set_pwm_offset_function = modular_server_.createFunction(constants::set_pwm_offset_function_name);
+  set_pwm_offset_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setPwmOffsetHandler));
+  set_pwm_offset_function.addParameter(channel_parameter);
+  set_pwm_offset_function.addParameter(pwm_amplitude_parameter);
+
+  modular_server::Function & set_pwm_gradient_function = modular_server_.createFunction(constants::set_pwm_gradient_function_name);
+  set_pwm_gradient_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setPwmGradientHandler));
+  set_pwm_gradient_function.addParameter(channel_parameter);
+  set_pwm_gradient_function.addParameter(pwm_amplitude_parameter);
+
+  modular_server::Function & set_zero_hold_current_operation_function = modular_server_.createFunction(constants::set_zero_hold_current_operation_function_name);
+  set_zero_hold_current_operation_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentOperationHandler));
+  set_zero_hold_current_operation_function.addParameter(channel_parameter);
+
   modular_server::Function & zero_hold_current_function = modular_server_.createFunction(constants::zero_hold_current_function_name);
   zero_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::zeroHoldCurrentHandler));
   zero_hold_current_function.addParameter(channel_parameter);
@@ -131,22 +154,6 @@ void StepperController::setup()
   modular_server::Function & restore_hold_current_function = modular_server_.createFunction(constants::restore_hold_current_function_name);
   restore_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreHoldCurrentHandler));
   restore_hold_current_function.addParameter(channel_parameter);
-
-  modular_server::Function & set_zero_hold_current_normal_operation_function = modular_server_.createFunction(constants::set_zero_hold_current_normal_operation_function_name);
-  set_zero_hold_current_normal_operation_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentNormalOperationHandler));
-  set_zero_hold_current_normal_operation_function.addParameter(channel_parameter);
-
-  modular_server::Function & set_zero_hold_current_freewheeling_function = modular_server_.createFunction(constants::set_zero_hold_current_freewheeling_function_name);
-  set_zero_hold_current_freewheeling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentFreewheelingHandler));
-  set_zero_hold_current_freewheeling_function.addParameter(channel_parameter);
-
-  modular_server::Function & set_zero_hold_current_braking_function = modular_server_.createFunction(constants::set_zero_hold_current_braking_function_name);
-  set_zero_hold_current_braking_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentBrakingHandler));
-  set_zero_hold_current_braking_function.addParameter(channel_parameter);
-
-  modular_server::Function & set_zero_hold_current_intense_braking_function = modular_server_.createFunction(constants::set_zero_hold_current_intense_braking_function_name);
-  set_zero_hold_current_intense_braking_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentIntenseBrakingHandler));
-  set_zero_hold_current_intense_braking_function.addParameter(channel_parameter);
 
   // Callbacks
 
@@ -195,6 +202,24 @@ void StepperController::disableAutomaticCurrentScaling(const size_t channel)
   }
 }
 
+void StepperController::setPwmOffset(const size_t channel,
+                                     const uint8_t percent)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setPwmOffset(percent);
+  }
+}
+
+void StepperController::setPwmGradient(const size_t channel,
+                                       const uint8_t percent)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setPwmGradient(percent);
+  }
+}
+
 void StepperController::zeroHoldCurrent(const size_t channel)
 {
   if (channel < getChannelCount())
@@ -211,35 +236,12 @@ void StepperController::restoreHoldCurrent(const size_t channel)
   }
 }
 
-void StepperController::setZeroHoldCurrentNormalOperation(const size_t channel)
+void StepperController::setZeroHoldCurrentOperation(const size_t channel,
+                                                    const TMC2130::ZeroHoldCurrentOperation operation)
 {
   if (channel < getChannelCount())
   {
-    drivers_[channel].setZeroHoldCurrentNormalOperation();
-  }
-}
-
-void StepperController::setZeroHoldCurrentFreewheeling(const size_t channel)
-{
-  if (channel < getChannelCount())
-  {
-    drivers_[channel].setZeroHoldCurrentFreewheeling();
-  }
-}
-
-void StepperController::setZeroHoldCurrentBraking(const size_t channel)
-{
-  if (channel < getChannelCount())
-  {
-    drivers_[channel].setZeroHoldCurrentBraking();
-  }
-}
-
-void StepperController::setZeroHoldCurrentIntenseBraking(const size_t channel)
-{
-  if (channel < getChannelCount())
-  {
-    drivers_[channel].setZeroHoldCurrentIntenseBraking();
+    drivers_[channel].setZeroHoldCurrentOperation(operation);
   }
 }
 
@@ -382,6 +384,32 @@ void StepperController::getDriversStatusHandler()
   modular_server_.response().endArray();
 }
 
+void StepperController::getDriversSettingsHandler()
+{
+  modular_server_.response().writeResultKey();
+
+  modular_server_.response().beginArray();
+
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    modular_server_.response().beginObject();
+
+    Driver & driver = drivers_[channel];
+    modular_server_.response().write(constants::communicating_string,driver.communicating());
+
+    TMC2130::Settings settings = driver.getSettings();
+    modular_server_.response().write(constants::stealth_chop_enabled_string,settings.stealth_chop_enabled);
+    modular_server_.response().write(constants::automatic_current_scaling_enabled_string,settings.automatic_current_scaling_enabled);
+    modular_server_.response().write(constants::pwm_offset_string,settings.pwm_offset);
+    modular_server_.response().write(constants::pwm_gradient_string,settings.pwm_gradient);
+    modular_server_.response().write(constants::zero_hold_current_operation_string,settings.zero_hold_current_operation);
+
+    modular_server_.response().endObject();
+  }
+
+  modular_server_.response().endArray();
+}
+
 void StepperController::enableAutomaticCurrentScalingHandler()
 {
   long channel;
@@ -396,6 +424,35 @@ void StepperController::disableAutomaticCurrentScalingHandler()
   disableAutomaticCurrentScaling(channel);
 }
 
+void StepperController::setPwmOffsetHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  long pwm_amplitude;
+  modular_server_.parameter(constants::pwm_amplitude_parameter_name).getValue(pwm_amplitude);
+
+  setPwmOffset(channel,pwm_amplitude);
+}
+
+void StepperController::setPwmGradientHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  long pwm_amplitude;
+  modular_server_.parameter(constants::pwm_amplitude_parameter_name).getValue(pwm_amplitude);
+
+  setPwmGradient(channel,pwm_amplitude);
+}
+
+void StepperController::setZeroHoldCurrentOperationHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  setZeroHoldCurrentOperation(channel,TMC2130::NORMAL);
+}
+
 void StepperController::zeroHoldCurrentHandler()
 {
   long channel;
@@ -408,32 +465,4 @@ void StepperController::restoreHoldCurrentHandler()
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
   restoreHoldCurrent(channel);
-}
-
-void StepperController::setZeroHoldCurrentNormalOperationHandler()
-{
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  setZeroHoldCurrentNormalOperation(channel);
-}
-
-void StepperController::setZeroHoldCurrentFreewheelingHandler()
-{
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  setZeroHoldCurrentFreewheeling(channel);
-}
-
-void StepperController::setZeroHoldCurrentBrakingHandler()
-{
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  setZeroHoldCurrentBraking(channel);
-}
-
-void StepperController::setZeroHoldCurrentIntenseBrakingHandler()
-{
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-  setZeroHoldCurrentIntenseBraking(channel);
 }

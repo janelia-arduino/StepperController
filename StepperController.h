@@ -47,14 +47,16 @@ public:
 
   void enableAutomaticCurrentScaling(const size_t channel);
   void disableAutomaticCurrentScaling(const size_t channel);
+  void setPwmOffset(const size_t channel,
+                    const uint8_t percent);
+  void setPwmGradient(const size_t channel,
+                      const uint8_t percent);
 
   void zeroHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
-  void setZeroHoldCurrentNormalOperation(const size_t channel);
-  void setZeroHoldCurrentFreewheeling(const size_t channel);
-  void setZeroHoldCurrentBraking(const size_t channel);
-  void setZeroHoldCurrentIntenseBraking(const size_t channel);
+  void setZeroHoldCurrentOperation(const size_t channel,
+                                   const TMC2130::ZeroHoldCurrentOperation operation);
 
 protected:
   // Handlers
@@ -80,14 +82,14 @@ private:
   void postSetMicrostepsPerStepHandler(const size_t channel);
   void setMicrostepsPerStepHandler(const size_t channel);
   void getDriversStatusHandler();
+  void getDriversSettingsHandler();
   void enableAutomaticCurrentScalingHandler();
   void disableAutomaticCurrentScalingHandler();
+  void setPwmOffsetHandler();
+  void setPwmGradientHandler();
+  void setZeroHoldCurrentOperationHandler();
   void zeroHoldCurrentHandler();
   void restoreHoldCurrentHandler();
-  void setZeroHoldCurrentNormalOperationHandler();
-  void setZeroHoldCurrentFreewheelingHandler();
-  void setZeroHoldCurrentBrakingHandler();
-  void setZeroHoldCurrentIntenseBrakingHandler();
 
 };
 

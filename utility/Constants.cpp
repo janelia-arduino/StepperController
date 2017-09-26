@@ -27,6 +27,8 @@ const modular_server::FirmwareInfo firmware_info =
 CONSTANT_STRING(hardware_name,"stepper_controller");
 
 CONSTANT_STRING(communicating_string,"communicating");
+
+// Status Strings
 CONSTANT_STRING(load_string,"load");
 CONSTANT_STRING(full_step_active_string,"full_step_active");
 CONSTANT_STRING(current_scaling_string,"current_scaling");
@@ -38,6 +40,17 @@ CONSTANT_STRING(short_to_ground_b_string,"short_to_ground_b");
 CONSTANT_STRING(open_load_a_string,"open_load_a");
 CONSTANT_STRING(open_load_b_string,"open_load_b");
 CONSTANT_STRING(standstill_string,"standstill");
+
+// Setting Strings
+CONSTANT_STRING(stealth_chop_enabled_string,"stealth_chop_enabled");
+CONSTANT_STRING(automatic_current_scaling_enabled_string,"automatic_current_scaling_enabled");
+CONSTANT_STRING(pwm_offset_string,"pwm_offset");
+CONSTANT_STRING(pwm_gradient_string,"pwm_gradient");
+CONSTANT_STRING(zero_hold_current_operation_string,"zero_hold_current_operation");
+CONSTANT_STRING(normal_string,"normal");
+CONSTANT_STRING(freewheeling_string,"freewheeling");
+CONSTANT_STRING(braking_string,"braking");
+CONSTANT_STRING(strong_braking_string,"strong_braking");
 
 // Interrupts
 
@@ -93,17 +106,18 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
   };
 
 // Parameters
+CONSTANT_STRING(pwm_amplitude_parameter_name,"pwm_amplitude");
 
 // Functions
 CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
+CONSTANT_STRING(get_drivers_settings_function_name,"getDriversSettings");
 CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticCurrentScaling");
 CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
+CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
+CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");
+CONSTANT_STRING(set_zero_hold_current_operation_function_name,"setZeroHoldCurrentOperation");
 CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
-CONSTANT_STRING(set_zero_hold_current_normal_operation_function_name,"setZeroHoldCurrentNormalOperation");
-CONSTANT_STRING(set_zero_hold_current_freewheeling_function_name,"setZeroHoldCurrentFreewheeling");
-CONSTANT_STRING(set_zero_hold_current_braking_function_name,"setZeroHoldCurrentBraking");
-CONSTANT_STRING(set_zero_hold_current_intense_braking_function_name,"setZeroHoldCurrentIntenseBraking");
 
 // Callbacks
 

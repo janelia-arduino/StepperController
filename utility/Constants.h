@@ -32,6 +32,8 @@ extern const modular_server::HardwareInfo hardware_info;
 extern const size_t controller_count;
 
 extern ConstantString communicating_string;
+
+// Status Strings
 extern ConstantString load_string;
 extern ConstantString full_step_active_string;
 extern ConstantString current_scaling_string;
@@ -43,6 +45,17 @@ extern ConstantString short_to_ground_b_string;
 extern ConstantString open_load_a_string;
 extern ConstantString open_load_b_string;
 extern ConstantString standstill_string;
+
+// Setting Strings
+extern ConstantString stealth_chop_enabled_string;
+extern ConstantString automatic_current_scaling_enabled_string;
+extern ConstantString pwm_offset_string;
+extern ConstantString pwm_gradient_string;
+extern ConstantString zero_hold_current_operation_string;
+extern ConstantString normal_string;
+extern ConstantString freewheeling_string;
+extern ConstantString braking_string;
+extern ConstantString strong_braking_string;
 
 // Interrupts
 
@@ -90,17 +103,18 @@ enum{MICROSTEPS_PER_STEP_SUBSET_LENGTH=9};
 extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH];
 
 // Parameters
+extern ConstantString pwm_amplitude_parameter_name;
 
 // Functions
 extern ConstantString get_drivers_status_function_name;
+extern ConstantString get_drivers_settings_function_name;
 extern ConstantString enable_automatic_current_scaling_function_name;
 extern ConstantString disable_automatic_current_scaling_function_name;
+extern ConstantString set_pwm_offset_function_name;
+extern ConstantString set_pwm_gradient_function_name;
+extern ConstantString set_zero_hold_current_operation_function_name;
 extern ConstantString zero_hold_current_function_name;
 extern ConstantString restore_hold_current_function_name;
-extern ConstantString set_zero_hold_current_normal_operation_function_name;
-extern ConstantString set_zero_hold_current_freewheeling_function_name;
-extern ConstantString set_zero_hold_current_braking_function_name;
-extern ConstantString set_zero_hold_current_intense_braking_function_name;
 
 // Callbacks
 
