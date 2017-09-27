@@ -46,11 +46,9 @@ CONSTANT_STRING(stealth_chop_enabled_string,"stealth_chop_enabled");
 CONSTANT_STRING(automatic_current_scaling_enabled_string,"automatic_current_scaling_enabled");
 CONSTANT_STRING(pwm_offset_string,"pwm_offset");
 CONSTANT_STRING(pwm_gradient_string,"pwm_gradient");
-CONSTANT_STRING(zero_hold_current_operation_string,"zero_hold_current_operation");
-CONSTANT_STRING(normal_string,"normal");
-CONSTANT_STRING(freewheeling_string,"freewheeling");
-CONSTANT_STRING(braking_string,"braking");
-CONSTANT_STRING(strong_braking_string,"strong_braking");
+CONSTANT_STRING(irun_string,"irun");
+CONSTANT_STRING(ihold_string,"ihold");
+CONSTANT_STRING(iholddelay_string,"iholddelay");
 
 // Interrupts
 
@@ -106,18 +104,34 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
   };
 
 // Parameters
+CONSTANT_STRING(zero_hold_current_mode_parameter_name,"zero_hold_current_mode");
+CONSTANT_STRING(zero_hold_current_mode_normal,"NORMAL");
+CONSTANT_STRING(zero_hold_current_mode_freewheeling,"FREEWHEELING");
+CONSTANT_STRING(zero_hold_current_mode_braking,"BRAKING");
+CONSTANT_STRING(zero_hold_current_mode_strong_braking,"STRONG_BRAKING");
+modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH] =
+  {
+    {.cs_ptr=&zero_hold_current_mode_normal},
+    {.cs_ptr=&zero_hold_current_mode_freewheeling},
+    {.cs_ptr=&zero_hold_current_mode_braking},
+    {.cs_ptr=&zero_hold_current_mode_strong_braking},
+  };
+
 CONSTANT_STRING(pwm_amplitude_parameter_name,"pwm_amplitude");
+const long pwm_amplitude_min = 0;
+const long pwm_amplitude_max = 255;
 
 // Functions
 CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
 CONSTANT_STRING(get_drivers_settings_function_name,"getDriversSettings");
 CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticCurrentScaling");
 CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
-CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
-CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");
-CONSTANT_STRING(set_zero_hold_current_operation_function_name,"setZeroHoldCurrentOperation");
+CONSTANT_STRING(set_zero_hold_current_mode_function_name,"setZeroHoldCurrentMode");
 CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
+CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
+CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");
+CONSTANT_STRING(get_pwm_scales_function_name,"getPwmScales");
 
 // Callbacks
 

@@ -17,8 +17,8 @@ namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=5};
-enum{PARAMETER_COUNT_MAX=1};
-enum{FUNCTION_COUNT_MAX=9};
+enum{PARAMETER_COUNT_MAX=2};
+enum{FUNCTION_COUNT_MAX=10};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -51,11 +51,9 @@ extern ConstantString stealth_chop_enabled_string;
 extern ConstantString automatic_current_scaling_enabled_string;
 extern ConstantString pwm_offset_string;
 extern ConstantString pwm_gradient_string;
-extern ConstantString zero_hold_current_operation_string;
-extern ConstantString normal_string;
-extern ConstantString freewheeling_string;
-extern ConstantString braking_string;
-extern ConstantString strong_braking_string;
+extern ConstantString irun_string;
+extern ConstantString ihold_string;
+extern ConstantString iholddelay_string;
 
 // Interrupts
 
@@ -103,18 +101,29 @@ enum{MICROSTEPS_PER_STEP_SUBSET_LENGTH=9};
 extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH];
 
 // Parameters
+extern ConstantString zero_hold_current_mode_parameter_name;
+enum{ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH=4};
+extern ConstantString zero_hold_current_mode_normal;
+extern ConstantString zero_hold_current_mode_freewheeling;
+extern ConstantString zero_hold_current_mode_braking;
+extern ConstantString zero_hold_current_mode_strong_braking;
+extern modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH];
+
 extern ConstantString pwm_amplitude_parameter_name;
+extern const long pwm_amplitude_min;
+extern const long pwm_amplitude_max;
 
 // Functions
 extern ConstantString get_drivers_status_function_name;
 extern ConstantString get_drivers_settings_function_name;
 extern ConstantString enable_automatic_current_scaling_function_name;
 extern ConstantString disable_automatic_current_scaling_function_name;
-extern ConstantString set_pwm_offset_function_name;
-extern ConstantString set_pwm_gradient_function_name;
-extern ConstantString set_zero_hold_current_operation_function_name;
+extern ConstantString set_zero_hold_current_mode_function_name;
 extern ConstantString zero_hold_current_function_name;
 extern ConstantString restore_hold_current_function_name;
+extern ConstantString set_pwm_offset_function_name;
+extern ConstantString set_pwm_gradient_function_name;
+extern ConstantString get_pwm_scales_function_name;
 
 // Callbacks
 

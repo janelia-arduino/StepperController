@@ -47,16 +47,22 @@ public:
 
   void enableAutomaticCurrentScaling(const size_t channel);
   void disableAutomaticCurrentScaling(const size_t channel);
-  void setPwmOffset(const size_t channel,
-                    const uint8_t percent);
-  void setPwmGradient(const size_t channel,
-                      const uint8_t percent);
 
   void zeroHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
-  void setZeroHoldCurrentOperation(const size_t channel,
-                                   const TMC2130::ZeroHoldCurrentOperation operation);
+  void setZeroHoldCurrentMode(const size_t channel,
+                              const TMC2130::ZeroHoldCurrentMode mode);
+  void setZeroHoldCurrentMode(const size_t channel,
+                              const ConstantString & mode);
+  void setZeroHoldCurrentMode(const size_t channel,
+                              const char * mode);
+
+  void setPwmOffset(const size_t channel,
+                    const uint8_t pwm_amplitude);
+  void setPwmGradient(const size_t channel,
+                      const uint8_t pwm_amplitude);
+  uint8_t getPwmScale(const size_t channel);
 
 protected:
   // Handlers
@@ -85,11 +91,12 @@ private:
   void getDriversSettingsHandler();
   void enableAutomaticCurrentScalingHandler();
   void disableAutomaticCurrentScalingHandler();
-  void setPwmOffsetHandler();
-  void setPwmGradientHandler();
-  void setZeroHoldCurrentOperationHandler();
+  void setZeroHoldCurrentModeHandler();
   void zeroHoldCurrentHandler();
   void restoreHoldCurrentHandler();
+  void setPwmOffsetHandler();
+  void setPwmGradientHandler();
+  void getPwmScalesHandler();
 
 };
 
