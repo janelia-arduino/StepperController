@@ -57,6 +57,8 @@ extern const long hold_delay_default[CHANNEL_COUNT_MAX];
 
 extern const long microsteps_per_step_default[CHANNEL_COUNT_MAX];
 
+extern const ConstantString * const zero_hold_current_mode_ptr_default[CHANNEL_COUNT_MAX];
+
 // Parameters
 
 // Functions

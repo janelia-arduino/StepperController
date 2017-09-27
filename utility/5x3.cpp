@@ -136,6 +136,13 @@ const long microsteps_per_step_default[CHANNEL_COUNT_MAX] =
     microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,
   };
 
+const ConstantString * const zero_hold_current_mode_ptr_default[CHANNEL_COUNT_MAX] =
+  {
+   &zero_hold_current_mode_freewheeling,
+   &zero_hold_current_mode_freewheeling,
+   &zero_hold_current_mode_freewheeling,
+  };
+
 // Parameters
 
 // Functions

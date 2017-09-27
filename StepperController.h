@@ -51,13 +51,6 @@ public:
   void zeroHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
-  void setZeroHoldCurrentMode(const size_t channel,
-                              const TMC2130::ZeroHoldCurrentMode mode);
-  void setZeroHoldCurrentMode(const size_t channel,
-                              const ConstantString & mode);
-  void setZeroHoldCurrentMode(const size_t channel,
-                              const char * mode);
-
   void setPwmOffset(const size_t channel,
                     const uint8_t pwm_amplitude);
   void setPwmGradient(const size_t channel,
@@ -87,11 +80,11 @@ private:
   void preSetMicrostepsPerStepHandler(const size_t channel);
   void postSetMicrostepsPerStepHandler(const size_t channel);
   void setMicrostepsPerStepHandler(const size_t channel);
+  void setZeroHoldCurrentModeHandler(const size_t channel);
   void getDriversStatusHandler();
   void getDriversSettingsHandler();
   void enableAutomaticCurrentScalingHandler();
   void disableAutomaticCurrentScalingHandler();
-  void setZeroHoldCurrentModeHandler();
   void zeroHoldCurrentHandler();
   void restoreHoldCurrentHandler();
   void setPwmOffsetHandler();

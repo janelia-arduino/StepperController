@@ -34,15 +34,25 @@ License:
     "verbosity":"NAMES",
     "functions":[
       "getDriversStatus",
-      "minimizeHoldCurrent",
-      "restoreHoldCurrent"
+      "getDriversSettings",
+      "enableAutomaticCurrentScaling",
+      "disableAutomaticCurrentScaling",
+      "zeroHoldCurrent",
+      "restoreHoldCurrent",
+      "setPwmOffset",
+      "setPwmGradient",
+      "getPwmScales"
+    ],
+    "parameters":[
+      "pwm_amplitude"
     ],
     "properties":[
       "invertDriverDirection",
       "runCurrent",
       "holdCurrent",
       "holdDelay",
-      "microstepsPerStep"
+      "microstepsPerStep",
+      "zeroHoldCurrentMode"
     ]
   }
 }

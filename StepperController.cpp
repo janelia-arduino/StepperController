@@ -104,12 +104,12 @@ void StepperController::setup()
   microsteps_per_step_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::preSetMicrostepsPerStepHandler));
   microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::postSetMicrostepsPerStepHandler));
 
+  modular_server::Property & zero_hold_current_mode_property = modular_server_.createProperty(constants::zero_hold_current_mode_property_name,constants::zero_hold_current_mode_ptr_default);
+  zero_hold_current_mode_property.setSubset(constants::zero_hold_current_mode_ptr_subset);
+  zero_hold_current_mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setZeroHoldCurrentModeHandler));
+
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
-
-  modular_server::Parameter & zero_hold_current_mode_parameter = modular_server_.createParameter(constants::zero_hold_current_mode_parameter_name);
-  zero_hold_current_mode_parameter.setTypeString();
-  zero_hold_current_mode_parameter.setSubset(constants::zero_hold_current_mode_ptr_subset);
 
   modular_server::Parameter & pwm_amplitude_parameter = modular_server_.createParameter(constants::pwm_amplitude_parameter_name);
   pwm_amplitude_parameter.setRange(constants::percent_min,constants::percent_max);
@@ -135,11 +135,6 @@ void StepperController::setup()
   modular_server::Function & disable_automatic_current_scaling_function = modular_server_.createFunction(constants::disable_automatic_current_scaling_function_name);
   disable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::disableAutomaticCurrentScalingHandler));
   disable_automatic_current_scaling_function.addParameter(channel_parameter);
-
-  modular_server::Function & set_zero_hold_current_mode_function = modular_server_.createFunction(constants::set_zero_hold_current_mode_function_name);
-  set_zero_hold_current_mode_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setZeroHoldCurrentModeHandler));
-  set_zero_hold_current_mode_function.addParameter(channel_parameter);
-  set_zero_hold_current_mode_function.addParameter(zero_hold_current_mode_parameter);
 
   modular_server::Function & zero_hold_current_function = modular_server_.createFunction(constants::zero_hold_current_function_name);
   zero_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::zeroHoldCurrentHandler));
@@ -175,11 +170,13 @@ void StepperController::reinitialize()
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     drivers_[channel].initialize();
-    setMicrostepsPerStepHandler(channel);
     invertDriverDirectionHandler(channel);
     setRunCurrentHandler(channel);
     setHoldCurrentHandler(channel);
     setHoldDelayHandler(channel);
+    setMicrostepsPerStepHandler(channel);
+    setZeroHoldCurrentModeHandler(channel);
+    enableAutomaticCurrentScaling(channel);
   }
   enableAll();
 }
@@ -224,67 +221,6 @@ void StepperController::restoreHoldCurrent(const size_t channel)
   if (channel < getChannelCount())
   {
     setHoldCurrentHandler(channel);
-  }
-}
-
-void StepperController::setZeroHoldCurrentMode(const size_t channel,
-                                               const TMC2130::ZeroHoldCurrentMode mode)
-{
-  if (channel < getChannelCount())
-  {
-    drivers_[channel].setZeroHoldCurrentMode(mode);
-  }
-}
-
-void StepperController::setZeroHoldCurrentMode(const size_t channel,
-                                               const ConstantString & mode)
-{
-  if (channel < getChannelCount())
-  {
-    TMC2130::ZeroHoldCurrentMode zero_hold_current_mode = TMC2130::NORMAL;
-    if (mode == constants::zero_hold_current_mode_normal)
-    {
-      zero_hold_current_mode = TMC2130::NORMAL;
-    }
-    else if (mode == constants::zero_hold_current_mode_freewheeling)
-    {
-      zero_hold_current_mode = TMC2130::FREEWHEELING;
-    }
-    else if (mode == constants::zero_hold_current_mode_braking)
-    {
-      zero_hold_current_mode = TMC2130::BRAKING;
-    }
-    else if (mode == constants::zero_hold_current_mode_strong_braking)
-    {
-      zero_hold_current_mode = TMC2130::STRONG_BRAKING;
-    }
-    drivers_[channel].setZeroHoldCurrentMode(zero_hold_current_mode);
-  }
-}
-
-void StepperController::setZeroHoldCurrentMode(const size_t channel,
-                                               const char * mode)
-{
-  if (channel < getChannelCount())
-  {
-    TMC2130::ZeroHoldCurrentMode zero_hold_current_mode = TMC2130::NORMAL;
-    if (mode == constants::zero_hold_current_mode_normal)
-    {
-      zero_hold_current_mode = TMC2130::NORMAL;
-    }
-    else if (mode == constants::zero_hold_current_mode_freewheeling)
-    {
-      zero_hold_current_mode = TMC2130::FREEWHEELING;
-    }
-    else if (mode == constants::zero_hold_current_mode_braking)
-    {
-      zero_hold_current_mode = TMC2130::BRAKING;
-    }
-    else if (mode == constants::zero_hold_current_mode_strong_braking)
-    {
-      zero_hold_current_mode = TMC2130::STRONG_BRAKING;
-    }
-    drivers_[channel].setZeroHoldCurrentMode(zero_hold_current_mode);
   }
 }
 
@@ -354,6 +290,9 @@ void StepperController::setChannelCountHandler()
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   microsteps_per_step_property.setArrayLengthRange(channel_count,channel_count);
 
+  modular_server::Property & zero_hold_current_mode_property = modular_server_.property(constants::zero_hold_current_mode_property_name);
+  zero_hold_current_mode_property.setArrayLengthRange(channel_count,channel_count);
+
 }
 
 void StepperController::invertDriverDirectionHandler(const size_t channel)
@@ -419,6 +358,32 @@ void StepperController::setMicrostepsPerStepHandler(const size_t channel)
 
   Driver & driver = drivers_[channel];
   driver.setMicrostepsPerStep(microsteps_per_step);
+}
+
+void StepperController::setZeroHoldCurrentModeHandler(const size_t channel)
+{
+  const ConstantString * mode_ptr;
+  modular_server_.property(constants::zero_hold_current_mode_property_name).getElementValue(channel,mode_ptr);
+
+  TMC2130::ZeroHoldCurrentMode zero_hold_current_mode = TMC2130::NORMAL;
+  if (mode_ptr == &constants::zero_hold_current_mode_normal)
+  {
+    zero_hold_current_mode = TMC2130::NORMAL;
+  }
+  else if (mode_ptr == &constants::zero_hold_current_mode_freewheeling)
+  {
+    zero_hold_current_mode = TMC2130::FREEWHEELING;
+  }
+  else if (mode_ptr == &constants::zero_hold_current_mode_braking)
+  {
+    zero_hold_current_mode = TMC2130::BRAKING;
+  }
+  else if (mode_ptr == &constants::zero_hold_current_mode_strong_braking)
+  {
+    zero_hold_current_mode = TMC2130::STRONG_BRAKING;
+  }
+  Driver & driver = drivers_[channel];
+  driver.setZeroHoldCurrentMode(zero_hold_current_mode);
 }
 
 void StepperController::getDriversStatusHandler()
@@ -488,7 +453,7 @@ void StepperController::getDriversSettingsHandler()
     {
       zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_strong_braking;
     }
-    modular_server_.response().write(constants::zero_hold_current_mode_parameter_name,*zero_hold_current_mode_ptr);
+    modular_server_.response().write(constants::zero_hold_current_mode_property_name,*zero_hold_current_mode_ptr);
     modular_server_.response().write(constants::pwm_offset_string,settings.pwm_offset);
     modular_server_.response().write(constants::pwm_gradient_string,settings.pwm_gradient);
     modular_server_.response().write(constants::irun_string,settings.irun);
@@ -515,17 +480,6 @@ void StepperController::disableAutomaticCurrentScalingHandler()
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
 
   disableAutomaticCurrentScaling(channel);
-}
-
-void StepperController::setZeroHoldCurrentModeHandler()
-{
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-
-  const char * zero_hold_current_mode;
-  modular_server_.parameter(constants::zero_hold_current_mode_parameter_name).getValue(zero_hold_current_mode);
-
-  setZeroHoldCurrentMode(channel,zero_hold_current_mode);
 }
 
 void StepperController::zeroHoldCurrentHandler()

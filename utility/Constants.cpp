@@ -20,8 +20,8 @@ const modular_server::FirmwareInfo firmware_info =
   {
     .name_ptr=&firmware_name,
     .version_major=2,
-    .version_minor=1,
-    .version_patch=1,
+    .version_minor=2,
+    .version_patch=0,
   };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
@@ -103,8 +103,7 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
     {.l=256},
   };
 
-// Parameters
-CONSTANT_STRING(zero_hold_current_mode_parameter_name,"zero_hold_current_mode");
+CONSTANT_STRING(zero_hold_current_mode_property_name,"zeroHoldCurrentMode");
 CONSTANT_STRING(zero_hold_current_mode_normal,"NORMAL");
 CONSTANT_STRING(zero_hold_current_mode_freewheeling,"FREEWHEELING");
 CONSTANT_STRING(zero_hold_current_mode_braking,"BRAKING");
@@ -117,6 +116,7 @@ modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CUR
     {.cs_ptr=&zero_hold_current_mode_strong_braking},
   };
 
+// Parameters
 CONSTANT_STRING(pwm_amplitude_parameter_name,"pwm_amplitude");
 const long pwm_amplitude_min = 0;
 const long pwm_amplitude_max = 255;
@@ -126,7 +126,6 @@ CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
 CONSTANT_STRING(get_drivers_settings_function_name,"getDriversSettings");
 CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticCurrentScaling");
 CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
-CONSTANT_STRING(set_zero_hold_current_mode_function_name,"setZeroHoldCurrentMode");
 CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
 CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
