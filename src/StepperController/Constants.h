@@ -7,8 +7,8 @@
 // ----------------------------------------------------------------------------
 #ifndef STEPPER_CONTROLLER_CONSTANTS_H
 #define STEPPER_CONTROLLER_CONSTANTS_H
-#include "ConstantVariable.h"
-#include "StepDirController.h"
+#include <ConstantVariable.h>
+#include <StepDirController.h>
 
 
 namespace stepper_controller

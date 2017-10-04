@@ -5,7 +5,7 @@
 // Authors:
 // Peter Polidoro polidorop@janelia.hhmi.org
 // ----------------------------------------------------------------------------
-#include "StepperController.h"
+#include "../StepperController.h"
 
 
 using namespace stepper_controller;
