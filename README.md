@@ -28,11 +28,13 @@ License:
 
 ```json
 {
-  "id":"getApi",
-  "result":{
-    "firmware":["StepperController"],
-    "verbosity":"NAMES",
-    "functions":[
+  "id": "getApi",
+  "result": {
+    "firmware": [
+      "StepperController"
+    ],
+    "verbosity": "NAMES",
+    "functions": [
       "getDriversStatus",
       "getDriversSettings",
       "enableAutomaticCurrentScaling",
@@ -43,10 +45,10 @@ License:
       "setPwmGradient",
       "getPwmScales"
     ],
-    "parameters":[
+    "parameters": [
       "pwm_amplitude"
     ],
-    "properties":[
+    "properties": [
       "invertDriverDirection",
       "runCurrent",
       "holdCurrent",
