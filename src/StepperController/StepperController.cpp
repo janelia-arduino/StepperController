@@ -20,6 +20,9 @@ void StepperController::setup()
   StepDirController::setup();
   setControllerCount(constants::controller_count);
 
+  // Reset Watchdog
+  resetWatchdog();
+
   // Driver Setup
   for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
