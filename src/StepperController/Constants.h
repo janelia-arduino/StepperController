@@ -99,6 +99,7 @@ extern const long hold_delay_element_default;
 extern ConstantString microsteps_per_step_property_name;
 enum{MICROSTEPS_PER_STEP_SUBSET_LENGTH=9};
 extern modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH];
+extern const long microsteps_per_step_element_default;
 
 extern ConstantString zero_hold_current_mode_property_name;
 enum{ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH=4};
@@ -107,6 +108,7 @@ extern ConstantString zero_hold_current_mode_freewheeling;
 extern ConstantString zero_hold_current_mode_braking;
 extern ConstantString zero_hold_current_mode_strong_braking;
 extern modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH];
+extern const ConstantString * const zero_hold_current_mode_ptr_element_default;
 
 // Parameters
 extern ConstantString pwm_amplitude_parameter_name;

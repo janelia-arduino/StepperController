@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
     .name_ptr=&firmware_name,
     .version_major=2,
     .version_minor=2,
-    .version_patch=3,
+    .version_patch=4,
   };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
@@ -102,6 +102,7 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
     {.l=128},
     {.l=256},
   };
+const long microsteps_per_step_element_default = 256;
 
 CONSTANT_STRING(zero_hold_current_mode_property_name,"zeroHoldCurrentMode");
 CONSTANT_STRING(zero_hold_current_mode_normal,"NORMAL");
@@ -115,6 +116,7 @@ modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CUR
     {.cs_ptr=&zero_hold_current_mode_braking},
     {.cs_ptr=&zero_hold_current_mode_strong_braking},
   };
+const ConstantString * const zero_hold_current_mode_ptr_element_default = &zero_hold_current_mode_freewheeling;
 
 // Parameters
 CONSTANT_STRING(pwm_amplitude_parameter_name,"pwm_amplitude");

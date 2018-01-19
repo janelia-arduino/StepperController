@@ -103,12 +103,12 @@ const long hold_delay_default[CHANNEL_COUNT_MAX] =
 
 const long microsteps_per_step_default[CHANNEL_COUNT_MAX] =
   {
-    microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH - 1].l,
+    microsteps_per_step_element_default,
   };
 
 const ConstantString * const zero_hold_current_mode_ptr_default[CHANNEL_COUNT_MAX] =
   {
-   &zero_hold_current_mode_freewheeling,
+   zero_hold_current_mode_ptr_element_default,
   };
 
 // Parameters
