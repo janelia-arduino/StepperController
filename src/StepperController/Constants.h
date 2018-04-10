@@ -55,7 +55,7 @@ extern ConstantString irun_string;
 extern ConstantString ihold_string;
 extern ConstantString iholddelay_string;
 
-// Interrupts
+// Pins
 
 // Units
 extern ConstantString percent_units;

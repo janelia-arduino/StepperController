@@ -17,12 +17,12 @@ CONSTANT_STRING(device_name,"stepper_controller");
 CONSTANT_STRING(firmware_name,"StepperController");
 // Use semantic versioning http://semver.org/
 const modular_server::FirmwareInfo firmware_info =
-  {
-    .name_ptr=&firmware_name,
-    .version_major=2,
-    .version_minor=2,
-    .version_patch=4,
-  };
+{
+  .name_ptr=&firmware_name,
+  .version_major=2,
+  .version_minor=2,
+  .version_patch=4,
+};
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
 
@@ -50,7 +50,7 @@ CONSTANT_STRING(irun_string,"irun");
 CONSTANT_STRING(ihold_string,"ihold");
 CONSTANT_STRING(iholddelay_string,"iholddelay");
 
-// Interrupts
+// Pins
 
 // Units
 CONSTANT_STRING(percent_units,"%");
@@ -91,17 +91,17 @@ const long hold_delay_element_default = 50;
 
 CONSTANT_STRING(microsteps_per_step_property_name,"microstepsPerStep");
 modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH] =
-  {
-    {.l=1},
-    {.l=2},
-    {.l=4},
-    {.l=8},
-    {.l=16},
-    {.l=32},
-    {.l=64},
-    {.l=128},
-    {.l=256},
-  };
+{
+  {.l=1},
+  {.l=2},
+  {.l=4},
+  {.l=8},
+  {.l=16},
+  {.l=32},
+  {.l=64},
+  {.l=128},
+  {.l=256},
+};
 const long microsteps_per_step_element_default = 256;
 
 CONSTANT_STRING(zero_hold_current_mode_property_name,"zeroHoldCurrentMode");
@@ -110,12 +110,12 @@ CONSTANT_STRING(zero_hold_current_mode_freewheeling,"FREEWHEELING");
 CONSTANT_STRING(zero_hold_current_mode_braking,"BRAKING");
 CONSTANT_STRING(zero_hold_current_mode_strong_braking,"STRONG_BRAKING");
 modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH] =
-  {
-    {.cs_ptr=&zero_hold_current_mode_normal},
-    {.cs_ptr=&zero_hold_current_mode_freewheeling},
-    {.cs_ptr=&zero_hold_current_mode_braking},
-    {.cs_ptr=&zero_hold_current_mode_strong_braking},
-  };
+{
+  {.cs_ptr=&zero_hold_current_mode_normal},
+  {.cs_ptr=&zero_hold_current_mode_freewheeling},
+  {.cs_ptr=&zero_hold_current_mode_braking},
+  {.cs_ptr=&zero_hold_current_mode_strong_braking},
+};
 const ConstantString * const zero_hold_current_mode_ptr_element_default = &zero_hold_current_mode_freewheeling;
 
 // Parameters

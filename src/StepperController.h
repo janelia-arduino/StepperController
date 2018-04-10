@@ -50,7 +50,7 @@ protected:
   void setChannelCountHandler();
 
 private:
-  modular_server::Interrupt interrupts_[stepper_controller::constants::INTERRUPT_COUNT_MAX];
+  modular_server::Pin pins_[stepper_controller::constants::PIN_COUNT_MAX];
 
   modular_server::Property properties_[stepper_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[stepper_controller::constants::PARAMETER_COUNT_MAX];

@@ -38,9 +38,9 @@ void StepperController::setup()
   // Add Hardware
   modular_server_.removeHardware();
   modular_server_.addHardware(constants::hardware_info,
-                              interrupts_);
+                              pins_);
 
-  // Interrupts
+  // Pins
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
