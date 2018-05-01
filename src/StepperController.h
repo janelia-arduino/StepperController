@@ -37,6 +37,7 @@ public:
   void disableAutomaticCurrentScaling(const size_t channel);
 
   void zeroHoldCurrent(const size_t channel);
+  void maximizeHoldCurrent(const size_t channel);
   void restoreHoldCurrent(const size_t channel);
 
   void setPwmOffset(const size_t channel,
@@ -74,6 +75,7 @@ private:
   void enableAutomaticCurrentScalingHandler();
   void disableAutomaticCurrentScalingHandler();
   void zeroHoldCurrentHandler();
+  void maximizeHoldCurrentHandler();
   void restoreHoldCurrentHandler();
   void setPwmOffsetHandler();
   void setPwmGradientHandler();

@@ -20,8 +20,8 @@ const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
   .version_major=2,
-  .version_minor=2,
-  .version_patch=4,
+  .version_minor=3,
+  .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
@@ -129,6 +129,7 @@ CONSTANT_STRING(get_drivers_settings_function_name,"getDriversSettings");
 CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticCurrentScaling");
 CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
 CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
+CONSTANT_STRING(maximize_hold_current_function_name,"maximizeHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
 CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
 CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");

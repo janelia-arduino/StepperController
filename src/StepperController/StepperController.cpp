@@ -143,6 +143,10 @@ void StepperController::setup()
   zero_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::zeroHoldCurrentHandler));
   zero_hold_current_function.addParameter(channel_parameter);
 
+  modular_server::Function & maximize_hold_current_function = modular_server_.createFunction(constants::maximize_hold_current_function_name);
+  maximize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::maximizeHoldCurrentHandler));
+  maximize_hold_current_function.addParameter(channel_parameter);
+
   modular_server::Function & restore_hold_current_function = modular_server_.createFunction(constants::restore_hold_current_function_name);
   restore_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreHoldCurrentHandler));
   restore_hold_current_function.addParameter(channel_parameter);
@@ -216,6 +220,18 @@ void StepperController::zeroHoldCurrent(const size_t channel)
   if (channel < getChannelCount())
   {
     drivers_[channel].setHoldCurrent(constants::percent_min);
+  }
+}
+
+void StepperController::maximizeHoldCurrent(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    modular_server::Property & run_current_property = modular_server_.property(constants::run_current_property_name);
+    long run_current;
+    run_current_property.getElementValue(channel,run_current);
+
+    drivers_[channel].setHoldCurrent(run_current);
   }
 }
 
@@ -492,6 +508,14 @@ void StepperController::zeroHoldCurrentHandler()
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
 
   zeroHoldCurrent(channel);
+}
+
+void StepperController::maximizeHoldCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  maximizeHoldCurrent(channel);
 }
 
 void StepperController::restoreHoldCurrentHandler()

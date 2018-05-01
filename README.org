@@ -25,37 +25,38 @@
 * API NAMES
 
   #+BEGIN_SRC js
-{
-  "id": "getApi",
-  "result": {
-    "firmware": [
-      "StepperController"
-    ],
-    "verbosity": "NAMES",
-    "functions": [
-      "getDriversStatus",
-      "getDriversSettings",
-      "enableAutomaticCurrentScaling",
-      "disableAutomaticCurrentScaling",
-      "zeroHoldCurrent",
-      "restoreHoldCurrent",
-      "setPwmOffset",
-      "setPwmGradient",
-      "getPwmScales"
-    ],
-    "parameters": [
-      "pwm_amplitude"
-    ],
-    "properties": [
-      "invertDriverDirection",
-      "runCurrent",
-      "holdCurrent",
-      "holdDelay",
-      "microstepsPerStep",
-      "zeroHoldCurrentMode"
-    ]
-  }
-}
+    {
+      "id": "getApi",
+      "result": {
+        "firmware": [
+          "StepperController"
+        ],
+        "verbosity": "NAMES",
+        "functions": [
+          "getDriversStatus",
+          "getDriversSettings",
+          "enableAutomaticCurrentScaling",
+          "disableAutomaticCurrentScaling",
+          "zeroHoldCurrent",
+          "maximizeHoldCurrent",
+          "restoreHoldCurrent",
+          "setPwmOffset",
+          "setPwmGradient",
+          "getPwmScales"
+        ],
+        "parameters": [
+          "pwm_amplitude"
+        ],
+        "properties": [
+          "invertDriverDirection",
+          "runCurrent",
+          "holdCurrent",
+          "holdDelay",
+          "microstepsPerStep",
+          "zeroHoldCurrentMode"
+        ]
+      }
+    }
   #+END_SRC
 
 * API GENERAL

@@ -39,6 +39,12 @@
         ]
       },
       {
+        "name": "maximizeHoldCurrent",
+        "parameters": [
+          "channel"
+        ]
+      },
+      {
         "name": "restoreHoldCurrent",
         "parameters": [
           "channel"
