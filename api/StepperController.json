@@ -45,7 +45,27 @@
         ]
       },
       {
+        "name": "modifyHoldCurrent",
+        "parameters": [
+          "channel",
+          "current"
+        ]
+      },
+      {
         "name": "restoreHoldCurrent",
+        "parameters": [
+          "channel"
+        ]
+      },
+      {
+        "name": "modifyRunCurrent",
+        "parameters": [
+          "channel",
+          "current"
+        ]
+      },
+      {
+        "name": "restoreRunCurrent",
         "parameters": [
           "channel"
         ]
@@ -75,6 +95,10 @@
     "parameters": [
       {
         "name": "pwm_amplitude",
+        "type": "long"
+      },
+      {
+        "name": "current",
         "type": "long"
       }
     ],

@@ -20,7 +20,7 @@ const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
   .version_major=2,
-  .version_minor=3,
+  .version_minor=4,
   .version_patch=0,
 };
 
@@ -123,6 +123,8 @@ CONSTANT_STRING(pwm_amplitude_parameter_name,"pwm_amplitude");
 const long pwm_amplitude_min = 0;
 const long pwm_amplitude_max = 255;
 
+CONSTANT_STRING(current_parameter_name,"current");
+
 // Functions
 CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
 CONSTANT_STRING(get_drivers_settings_function_name,"getDriversSettings");
@@ -130,7 +132,10 @@ CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticC
 CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
 CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
 CONSTANT_STRING(maximize_hold_current_function_name,"maximizeHoldCurrent");
+CONSTANT_STRING(modify_hold_current_function_name,"modifyHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
+CONSTANT_STRING(modify_run_current_function_name,"modifyRunCurrent");
+CONSTANT_STRING(restore_run_current_function_name,"restoreRunCurrent");
 CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
 CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");
 CONSTANT_STRING(get_pwm_scales_function_name,"getPwmScales");

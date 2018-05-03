@@ -117,6 +117,10 @@ void StepperController::setup()
   modular_server::Parameter & pwm_amplitude_parameter = modular_server_.createParameter(constants::pwm_amplitude_parameter_name);
   pwm_amplitude_parameter.setRange(constants::percent_min,constants::percent_max);
 
+  modular_server::Parameter & current_parameter = modular_server_.createParameter(constants::current_parameter_name);
+  current_parameter.setUnits(constants::percent_units);
+  current_parameter.setRange(constants::percent_min,constants::percent_max);
+
   setChannelCountHandler();
   reinitialize();
 
@@ -147,9 +151,23 @@ void StepperController::setup()
   maximize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::maximizeHoldCurrentHandler));
   maximize_hold_current_function.addParameter(channel_parameter);
 
+  modular_server::Function & modify_hold_current_function = modular_server_.createFunction(constants::modify_hold_current_function_name);
+  modify_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::modifyHoldCurrentHandler));
+  modify_hold_current_function.addParameter(channel_parameter);
+  modify_hold_current_function.addParameter(current_parameter);
+
   modular_server::Function & restore_hold_current_function = modular_server_.createFunction(constants::restore_hold_current_function_name);
   restore_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreHoldCurrentHandler));
   restore_hold_current_function.addParameter(channel_parameter);
+
+  modular_server::Function & modify_run_current_function = modular_server_.createFunction(constants::modify_run_current_function_name);
+  modify_run_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::modifyRunCurrentHandler));
+  modify_run_current_function.addParameter(channel_parameter);
+  modify_run_current_function.addParameter(current_parameter);
+
+  modular_server::Function & restore_run_current_function = modular_server_.createFunction(constants::restore_run_current_function_name);
+  restore_run_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreRunCurrentHandler));
+  restore_run_current_function.addParameter(channel_parameter);
 
   modular_server::Function & set_pwm_offset_function = modular_server_.createFunction(constants::set_pwm_offset_function_name);
   set_pwm_offset_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setPwmOffsetHandler));
@@ -227,11 +245,19 @@ void StepperController::maximizeHoldCurrent(const size_t channel)
 {
   if (channel < getChannelCount())
   {
-    modular_server::Property & run_current_property = modular_server_.property(constants::run_current_property_name);
-    long run_current;
-    run_current_property.getElementValue(channel,run_current);
+    Driver & driver = drivers_[channel];
+    TMC2130::Settings settings = driver.getSettings();
 
-    drivers_[channel].setHoldCurrent(run_current);
+    drivers_[channel].setHoldCurrent(settings.irun);
+  }
+}
+
+void StepperController::modifyHoldCurrent(const size_t channel,
+                                          const uint8_t current)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setHoldCurrent(current);
   }
 }
 
@@ -240,6 +266,23 @@ void StepperController::restoreHoldCurrent(const size_t channel)
   if (channel < getChannelCount())
   {
     setHoldCurrentHandler(channel);
+  }
+}
+
+void StepperController::modifyRunCurrent(const size_t channel,
+                                          const uint8_t current)
+{
+  if (channel < getChannelCount())
+  {
+    drivers_[channel].setRunCurrent(current);
+  }
+}
+
+void StepperController::restoreRunCurrent(const size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    setRunCurrentHandler(channel);
   }
 }
 
@@ -518,12 +561,42 @@ void StepperController::maximizeHoldCurrentHandler()
   maximizeHoldCurrent(channel);
 }
 
+void StepperController::modifyHoldCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  long current;
+  modular_server_.parameter(constants::current_parameter_name).getValue(current);
+
+  modifyHoldCurrent(channel,current);
+}
+
 void StepperController::restoreHoldCurrentHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
 
   restoreHoldCurrent(channel);
+}
+
+void StepperController::modifyRunCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  long current;
+  modular_server_.parameter(constants::current_parameter_name).getValue(current);
+
+  modifyRunCurrent(channel,current);
+}
+
+void StepperController::restoreRunCurrentHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  restoreRunCurrent(channel);
 }
 
 void StepperController::setPwmOffsetHandler()

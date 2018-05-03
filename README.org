@@ -39,13 +39,17 @@
           "disableAutomaticCurrentScaling",
           "zeroHoldCurrent",
           "maximizeHoldCurrent",
+          "modifyHoldCurrent",
           "restoreHoldCurrent",
+          "modifyRunCurrent",
+          "restoreRunCurrent",
           "setPwmOffset",
           "setPwmGradient",
           "getPwmScales"
         ],
         "parameters": [
-          "pwm_amplitude"
+          "pwm_amplitude",
+          "current"
         ],
         "properties": [
           "invertDriverDirection",

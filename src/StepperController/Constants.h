@@ -17,8 +17,8 @@ namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=6};
-enum{PARAMETER_COUNT_MAX=1};
-enum{FUNCTION_COUNT_MAX=10};
+enum{PARAMETER_COUNT_MAX=2};
+enum{FUNCTION_COUNT_MAX=13};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -115,6 +115,8 @@ extern ConstantString pwm_amplitude_parameter_name;
 extern const long pwm_amplitude_min;
 extern const long pwm_amplitude_max;
 
+extern ConstantString current_parameter_name;
+
 // Functions
 extern ConstantString get_drivers_status_function_name;
 extern ConstantString get_drivers_settings_function_name;
@@ -122,7 +124,10 @@ extern ConstantString enable_automatic_current_scaling_function_name;
 extern ConstantString disable_automatic_current_scaling_function_name;
 extern ConstantString zero_hold_current_function_name;
 extern ConstantString maximize_hold_current_function_name;
+extern ConstantString modify_hold_current_function_name;
 extern ConstantString restore_hold_current_function_name;
+extern ConstantString modify_run_current_function_name;
+extern ConstantString restore_run_current_function_name;
 extern ConstantString set_pwm_offset_function_name;
 extern ConstantString set_pwm_gradient_function_name;
 extern ConstantString get_pwm_scales_function_name;
