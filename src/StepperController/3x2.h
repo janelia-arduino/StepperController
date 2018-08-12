@@ -3,7 +3,7 @@
 //
 //
 // Authors:
-// Peter Polidoro polidorop@janelia.hhmi.org
+// Peter Polidoro peterpolidoro@gmail.com
 // ----------------------------------------------------------------------------
 #ifndef STEPPER_CONTROLLER_3X2_CONSTANTS_H
 #define STEPPER_CONTROLLER_3X2_CONSTANTS_H
