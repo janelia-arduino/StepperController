@@ -27,7 +27,7 @@ void StepperController::setup()
   for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
     Driver & driver = drivers_[channel];
-    driver.setup(constants::cs_pins[channel]);
+    driver.setup(getDriverCsPin(channel));
   }
 
   // Pin Setup
@@ -312,6 +312,11 @@ uint8_t StepperController::getPwmScale(const size_t channel)
     pwm_scale = drivers_[channel].getPwmScale();
   }
   return pwm_scale;
+}
+
+size_t StepperController::getDriverCsPin(const size_t driver)
+{
+  return constants::cs_pins[driver];
 }
 
 // Handlers must be non-blocking (avoid 'delay')
