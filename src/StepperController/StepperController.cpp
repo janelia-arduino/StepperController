@@ -38,16 +38,16 @@ void StepperController::setup()
   // Add Hardware
   modular_server_.removeHardware();
   modular_server_.addHardware(constants::hardware_info,
-                              pins_);
+    pins_);
 
   // Pins
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
-                              properties_,
-                              parameters_,
-                              functions_,
-                              callbacks_);
+    properties_,
+    parameters_,
+    functions_,
+    callbacks_);
 
   // Properties
   modular_server::Property & channel_count_property = modular_server_.property(step_dir_controller::constants::channel_count_property_name);
@@ -253,7 +253,7 @@ void StepperController::maximizeHoldCurrent(const size_t channel)
 }
 
 void StepperController::modifyHoldCurrent(const size_t channel,
-                                          const uint8_t current)
+  const uint8_t current)
 {
   if (channel < getChannelCount())
   {
@@ -270,7 +270,7 @@ void StepperController::restoreHoldCurrent(const size_t channel)
 }
 
 void StepperController::modifyRunCurrent(const size_t channel,
-                                          const uint8_t current)
+  const uint8_t current)
 {
   if (channel < getChannelCount())
   {
@@ -287,7 +287,7 @@ void StepperController::restoreRunCurrent(const size_t channel)
 }
 
 void StepperController::setPwmOffset(const size_t channel,
-                                     const uint8_t pwm_amplitude)
+  const uint8_t pwm_amplitude)
 {
   if (channel < getChannelCount())
   {
@@ -296,7 +296,7 @@ void StepperController::setPwmOffset(const size_t channel,
 }
 
 void StepperController::setPwmGradient(const size_t channel,
-                                       const uint8_t pwm_amplitude)
+  const uint8_t pwm_amplitude)
 {
   if (channel < getChannelCount())
   {

@@ -39,17 +39,17 @@ public:
   void zeroHoldCurrent(const size_t channel);
   void maximizeHoldCurrent(const size_t channel);
   void modifyHoldCurrent(const size_t channel,
-                         const uint8_t current);
+    const uint8_t current);
   void restoreHoldCurrent(const size_t channel);
 
   void modifyRunCurrent(const size_t channel,
-                        const uint8_t current);
+    const uint8_t current);
   void restoreRunCurrent(const size_t channel);
 
   void setPwmOffset(const size_t channel,
-                    const uint8_t pwm_amplitude);
+    const uint8_t pwm_amplitude);
   void setPwmGradient(const size_t channel,
-                      const uint8_t pwm_amplitude);
+    const uint8_t pwm_amplitude);
   uint8_t getPwmScale(const size_t channel);
 
 protected:
