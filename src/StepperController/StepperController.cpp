@@ -85,31 +85,31 @@ void StepperController::setup()
   home_velocity_property.setDefaultValue(constants::home_velocity_default);
 
   modular_server::Property & invert_driver_direction_property = modular_server_.createProperty(constants::invert_driver_direction_property_name,constants::invert_driver_direction_default);
-  invert_driver_direction_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::invertDriverDirectionHandler));
+  invert_driver_direction_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::invertDriverDirectionHandler));
 
   modular_server::Property & run_current_property = modular_server_.createProperty(constants::run_current_property_name,constants::run_current_default);
   run_current_property.setUnits(constants::percent_units);
   run_current_property.setRange(constants::percent_min,constants::percent_max);
-  run_current_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setRunCurrentHandler));
+  run_current_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setRunCurrentHandler));
 
   modular_server::Property & hold_current_property = modular_server_.createProperty(constants::hold_current_property_name,constants::hold_current_default);
   hold_current_property.setUnits(constants::percent_units);
   hold_current_property.setRange(constants::percent_min,constants::percent_max);
-  hold_current_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setHoldCurrentHandler));
+  hold_current_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setHoldCurrentHandler));
 
   modular_server::Property & hold_delay_property = modular_server_.createProperty(constants::hold_delay_property_name,constants::hold_delay_default);
   hold_delay_property.setUnits(constants::percent_units);
   hold_delay_property.setRange(constants::percent_min,constants::percent_max);
-  hold_delay_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setHoldDelayHandler));
+  hold_delay_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setHoldDelayHandler));
 
   modular_server::Property & microsteps_per_step_property = modular_server_.createProperty(constants::microsteps_per_step_property_name,constants::microsteps_per_step_default);
   microsteps_per_step_property.setSubset(constants::microsteps_per_step_subset);
-  microsteps_per_step_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::preSetMicrostepsPerStepHandler));
-  microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::postSetMicrostepsPerStepHandler));
+  microsteps_per_step_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::preSetMicrostepsPerStepHandler));
+  microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::postSetMicrostepsPerStepHandler));
 
   modular_server::Property & zero_hold_current_mode_property = modular_server_.createProperty(constants::zero_hold_current_mode_property_name,constants::zero_hold_current_mode_ptr_default);
   zero_hold_current_mode_property.setSubset(constants::zero_hold_current_mode_ptr_subset);
-  zero_hold_current_mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepperController::setZeroHoldCurrentModeHandler));
+  zero_hold_current_mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setZeroHoldCurrentModeHandler));
 
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
@@ -217,7 +217,7 @@ size_t StepperController::getChannelCount()
   return channel_count;
 }
 
-void StepperController::enableAutomaticCurrentScaling(const size_t channel)
+void StepperController::enableAutomaticCurrentScaling(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -225,7 +225,7 @@ void StepperController::enableAutomaticCurrentScaling(const size_t channel)
   }
 }
 
-void StepperController::disableAutomaticCurrentScaling(const size_t channel)
+void StepperController::disableAutomaticCurrentScaling(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -233,7 +233,7 @@ void StepperController::disableAutomaticCurrentScaling(const size_t channel)
   }
 }
 
-void StepperController::zeroHoldCurrent(const size_t channel)
+void StepperController::zeroHoldCurrent(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -241,7 +241,7 @@ void StepperController::zeroHoldCurrent(const size_t channel)
   }
 }
 
-void StepperController::maximizeHoldCurrent(const size_t channel)
+void StepperController::maximizeHoldCurrent(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -252,8 +252,8 @@ void StepperController::maximizeHoldCurrent(const size_t channel)
   }
 }
 
-void StepperController::modifyHoldCurrent(const size_t channel,
-  const uint8_t current)
+void StepperController::modifyHoldCurrent(size_t channel,
+  uint8_t current)
 {
   if (channel < getChannelCount())
   {
@@ -261,7 +261,7 @@ void StepperController::modifyHoldCurrent(const size_t channel,
   }
 }
 
-void StepperController::restoreHoldCurrent(const size_t channel)
+void StepperController::restoreHoldCurrent(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -269,8 +269,8 @@ void StepperController::restoreHoldCurrent(const size_t channel)
   }
 }
 
-void StepperController::modifyRunCurrent(const size_t channel,
-  const uint8_t current)
+void StepperController::modifyRunCurrent(size_t channel,
+  uint8_t current)
 {
   if (channel < getChannelCount())
   {
@@ -278,7 +278,7 @@ void StepperController::modifyRunCurrent(const size_t channel,
   }
 }
 
-void StepperController::restoreRunCurrent(const size_t channel)
+void StepperController::restoreRunCurrent(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -286,8 +286,8 @@ void StepperController::restoreRunCurrent(const size_t channel)
   }
 }
 
-void StepperController::setPwmOffset(const size_t channel,
-  const uint8_t pwm_amplitude)
+void StepperController::setPwmOffset(size_t channel,
+  uint8_t pwm_amplitude)
 {
   if (channel < getChannelCount())
   {
@@ -295,8 +295,8 @@ void StepperController::setPwmOffset(const size_t channel,
   }
 }
 
-void StepperController::setPwmGradient(const size_t channel,
-  const uint8_t pwm_amplitude)
+void StepperController::setPwmGradient(size_t channel,
+  uint8_t pwm_amplitude)
 {
   if (channel < getChannelCount())
   {
@@ -304,7 +304,7 @@ void StepperController::setPwmGradient(const size_t channel,
   }
 }
 
-uint8_t StepperController::getPwmScale(const size_t channel)
+uint8_t StepperController::getPwmScale(size_t channel)
 {
   uint8_t pwm_scale = 0;
   if (channel < getChannelCount())
@@ -314,7 +314,7 @@ uint8_t StepperController::getPwmScale(const size_t channel)
   return pwm_scale;
 }
 
-size_t StepperController::getDriverCsPin(const size_t driver)
+size_t StepperController::getDriverCsPin(size_t driver)
 {
   return constants::cs_pins[driver];
 }
@@ -363,7 +363,7 @@ void StepperController::setChannelCountHandler()
 
 }
 
-void StepperController::invertDriverDirectionHandler(const size_t channel)
+void StepperController::invertDriverDirectionHandler(size_t channel)
 {
   modular_server::Property & invert_driver_direction_property = modular_server_.property(constants::invert_driver_direction_property_name);
   bool invert_driver_direction;
@@ -380,7 +380,7 @@ void StepperController::invertDriverDirectionHandler(const size_t channel)
   }
 }
 
-void StepperController::setRunCurrentHandler(const size_t channel)
+void StepperController::setRunCurrentHandler(size_t channel)
 {
   modular_server::Property & run_current_property = modular_server_.property(constants::run_current_property_name);
   long run_current;
@@ -389,7 +389,7 @@ void StepperController::setRunCurrentHandler(const size_t channel)
   drivers_[channel].setRunCurrent(run_current);
 }
 
-void StepperController::setHoldCurrentHandler(const size_t channel)
+void StepperController::setHoldCurrentHandler(size_t channel)
 {
   modular_server::Property & hold_current_property = modular_server_.property(constants::hold_current_property_name);
   long hold_current;
@@ -398,7 +398,7 @@ void StepperController::setHoldCurrentHandler(const size_t channel)
   drivers_[channel].setHoldCurrent(hold_current);
 }
 
-void StepperController::setHoldDelayHandler(const size_t channel)
+void StepperController::setHoldDelayHandler(size_t channel)
 {
   modular_server::Property & hold_delay_property = modular_server_.property(constants::hold_delay_property_name);
   long hold_delay;
@@ -407,18 +407,18 @@ void StepperController::setHoldDelayHandler(const size_t channel)
   drivers_[channel].setHoldDelay(hold_delay);
 }
 
-void StepperController::preSetMicrostepsPerStepHandler(const size_t channel)
+void StepperController::preSetMicrostepsPerStepHandler(size_t channel)
 {
   preUpdateScaledPropertiesHandler(channel);
 }
 
-void StepperController::postSetMicrostepsPerStepHandler(const size_t channel)
+void StepperController::postSetMicrostepsPerStepHandler(size_t channel)
 {
   postUpdateScaledPropertiesHandler(channel);
   setMicrostepsPerStepHandler(channel);
 }
 
-void StepperController::setMicrostepsPerStepHandler(const size_t channel)
+void StepperController::setMicrostepsPerStepHandler(size_t channel)
 {
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   long microsteps_per_step;
@@ -428,7 +428,7 @@ void StepperController::setMicrostepsPerStepHandler(const size_t channel)
   driver.setMicrostepsPerStep(microsteps_per_step);
 }
 
-void StepperController::setZeroHoldCurrentModeHandler(const size_t channel)
+void StepperController::setZeroHoldCurrentModeHandler(size_t channel)
 {
   const ConstantString * mode_ptr;
   modular_server_.property(constants::zero_hold_current_mode_property_name).getElementValue(channel,mode_ptr);

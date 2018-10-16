@@ -33,27 +33,27 @@ public:
 
   virtual size_t getChannelCount();
 
-  void enableAutomaticCurrentScaling(const size_t channel);
-  void disableAutomaticCurrentScaling(const size_t channel);
+  void enableAutomaticCurrentScaling(size_t channel);
+  void disableAutomaticCurrentScaling(size_t channel);
 
-  void zeroHoldCurrent(const size_t channel);
-  void maximizeHoldCurrent(const size_t channel);
-  void modifyHoldCurrent(const size_t channel,
-    const uint8_t current);
-  void restoreHoldCurrent(const size_t channel);
+  void zeroHoldCurrent(size_t channel);
+  void maximizeHoldCurrent(size_t channel);
+  void modifyHoldCurrent(size_t channel,
+    uint8_t current);
+  void restoreHoldCurrent(size_t channel);
 
-  void modifyRunCurrent(const size_t channel,
-    const uint8_t current);
-  void restoreRunCurrent(const size_t channel);
+  void modifyRunCurrent(size_t channel,
+    uint8_t current);
+  void restoreRunCurrent(size_t channel);
 
-  void setPwmOffset(const size_t channel,
-    const uint8_t pwm_amplitude);
-  void setPwmGradient(const size_t channel,
-    const uint8_t pwm_amplitude);
-  uint8_t getPwmScale(const size_t channel);
+  void setPwmOffset(size_t channel,
+    uint8_t pwm_amplitude);
+  void setPwmGradient(size_t channel,
+    uint8_t pwm_amplitude);
+  uint8_t getPwmScale(size_t channel);
 
 protected:
-  virtual size_t getDriverCsPin(const size_t driver);
+  virtual size_t getDriverCsPin(size_t driver);
   // Handlers
   void setChannelCountHandler();
 
@@ -69,14 +69,14 @@ private:
   Driver drivers_[stepper_controller::constants::CHANNEL_COUNT_MAX];
 
   // Handlers
-  void invertDriverDirectionHandler(const size_t channel);
-  void setRunCurrentHandler(const size_t channel);
-  void setHoldCurrentHandler(const size_t channel);
-  void setHoldDelayHandler(const size_t channel);
-  void preSetMicrostepsPerStepHandler(const size_t channel);
-  void postSetMicrostepsPerStepHandler(const size_t channel);
-  void setMicrostepsPerStepHandler(const size_t channel);
-  void setZeroHoldCurrentModeHandler(const size_t channel);
+  void invertDriverDirectionHandler(size_t channel);
+  void setRunCurrentHandler(size_t channel);
+  void setHoldCurrentHandler(size_t channel);
+  void setHoldDelayHandler(size_t channel);
+  void preSetMicrostepsPerStepHandler(size_t channel);
+  void postSetMicrostepsPerStepHandler(size_t channel);
+  void setMicrostepsPerStepHandler(size_t channel);
+  void setZeroHoldCurrentModeHandler(size_t channel);
   void getDriversStatusHandler();
   void getDriversSettingsHandler();
   void enableAutomaticCurrentScalingHandler();
