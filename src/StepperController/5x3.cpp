@@ -24,7 +24,7 @@ const modular_server::HardwareInfo hardware_info =
 
 const size_t controller_count = 1;
 
-const size_t cs_pins[CHANNEL_COUNT_MAX] =
+const size_t chip_select_pins[CHANNEL_COUNT_MAX] =
 {
   16,
   17,

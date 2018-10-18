@@ -53,7 +53,7 @@ public:
   uint8_t getPwmScale(size_t channel);
 
 protected:
-  virtual size_t getDriverCsPin(size_t driver);
+  virtual size_t getDriverChipSelectPin(size_t driver);
   // Handlers
   void setChannelCountHandler();
 
