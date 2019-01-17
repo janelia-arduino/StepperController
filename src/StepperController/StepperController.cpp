@@ -18,7 +18,7 @@ void StepperController::setup()
 {
   // Parent Setup
   StepDirController::setup();
-  setControllerCount(constants::controller_count);
+  setControllerCountLimit(constants::controller_count);
 
   // Reset Watchdog
   resetWatchdog();
