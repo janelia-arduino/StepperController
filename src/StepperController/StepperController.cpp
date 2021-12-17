@@ -179,11 +179,6 @@ void StepperController::setup()
   set_pwm_gradient_function.addParameter(channel_parameter);
   set_pwm_gradient_function.addParameter(pwm_amplitude_parameter);
 
-  modular_server::Function & get_pwm_scales_function = modular_server_.createFunction(constants::get_pwm_scales_function_name);
-  get_pwm_scales_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::getPwmScalesHandler));
-  get_pwm_scales_function.setResultTypeArray();
-  get_pwm_scales_function.setResultTypeLong();
-
   // Callbacks
 
 }
@@ -302,16 +297,6 @@ void StepperController::setPwmGradient(size_t channel,
   {
     drivers_[channel].setPwmGradient(pwm_amplitude);
   }
-}
-
-uint8_t StepperController::getPwmScale(size_t channel)
-{
-  uint8_t pwm_scale = 0;
-  if (channel < getChannelCount())
-  {
-    pwm_scale = drivers_[channel].getPwmScale();
-  }
-  return pwm_scale;
 }
 
 size_t StepperController::getDriverChipSelectPin(size_t driver)
@@ -606,19 +591,4 @@ void StepperController::setPwmGradientHandler()
   modular_server_.parameter(constants::pwm_amplitude_parameter_name).getValue(pwm_amplitude);
 
   setPwmGradient(channel,pwm_amplitude);
-}
-
-void StepperController::getPwmScalesHandler()
-{
-  modular_server_.response().writeResultKey();
-
-  modular_server_.response().beginArray();
-
-  for (size_t channel=0; channel<getChannelCount(); ++channel)
-  {
-    modular_server_.response().write(getPwmScale(channel));
-  }
-
-  modular_server_.response().endArray();
-
 }

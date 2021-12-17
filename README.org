@@ -4,7 +4,7 @@
 
 * Library Information
   - Name :: StepperController
-  - Version :: 2.5.2
+  - Version :: 3.0.0
   - License :: BSD
   - URL :: https://github.com/janelia-arduino/StepperController
   - Author :: Peter Polidoro
@@ -37,7 +37,6 @@
           "restoreRunCurrent",
           "setPwmOffset",
           "setPwmGradient",
-          "getPwmScales"
         ],
         "parameters": [
           "pwm_amplitude",

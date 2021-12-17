@@ -50,7 +50,6 @@ public:
     uint8_t pwm_amplitude);
   void setPwmGradient(size_t channel,
     uint8_t pwm_amplitude);
-  uint8_t getPwmScale(size_t channel);
 
 protected:
   virtual size_t getDriverChipSelectPin(size_t driver);

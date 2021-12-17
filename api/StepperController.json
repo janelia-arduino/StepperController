@@ -83,13 +83,6 @@
           "channel",
           "pwm_amplitude"
         ]
-      },
-      {
-        "name": "getPwmScales",
-        "result_info": {
-          "type": "array",
-          "array_element_type": "long"
-        }
       }
     ],
     "parameters": [

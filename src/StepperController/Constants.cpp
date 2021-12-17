@@ -138,7 +138,6 @@ CONSTANT_STRING(modify_run_current_function_name,"modifyRunCurrent");
 CONSTANT_STRING(restore_run_current_function_name,"restoreRunCurrent");
 CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
 CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");
-CONSTANT_STRING(get_pwm_scales_function_name,"getPwmScales");
 
 // Callbacks
 
