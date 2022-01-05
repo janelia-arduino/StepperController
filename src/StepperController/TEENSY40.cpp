@@ -23,11 +23,11 @@ const modular_server::HardwareInfo hardware_info =
 
 const size_t controller_count = 1;
 
-const size_t chip_select_pins[CHANNEL_COUNT_MAX] =
+HardwareSerial * driver_serial_ptrs[CHANNEL_COUNT_MAX] =
 {
-  16,
-  17,
-  18,
+  &Serial1,
+  &Serial3,
+  &Serial4,
 };
 
 // Pins

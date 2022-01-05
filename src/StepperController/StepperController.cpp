@@ -10,10 +10,6 @@
 
 using namespace stepper_controller;
 
-StepperController::StepperController()
-{
-}
-
 void StepperController::setup()
 {
   // Parent Setup
@@ -27,7 +23,7 @@ void StepperController::setup()
   for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
     Driver & driver = drivers_[channel];
-    driver.setup(getDriverChipSelectPin(channel));
+    driver.setup(getDriverSerial(channel));
   }
 
   // Pin Setup
@@ -189,14 +185,13 @@ void StepperController::reinitialize()
 
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
-    drivers_[channel].initialize();
-    invertDriverDirectionHandler(channel);
-    setRunCurrentHandler(channel);
-    setHoldCurrentHandler(channel);
-    setHoldDelayHandler(channel);
-    setMicrostepsPerStepHandler(channel);
-    setZeroHoldCurrentModeHandler(channel);
-    enableAutomaticCurrentScaling(channel);
+    resetWatchdog();
+    // invertDriverDirectionHandler(channel);
+  //   setRunCurrentHandler(channel);
+  //   setHoldCurrentHandler(channel);
+  //   setHoldDelayHandler(channel);
+  //   setMicrostepsPerStepHandler(channel);
+  //   setZeroHoldCurrentModeHandler(channel);
   }
   enableAll();
 }
@@ -241,7 +236,7 @@ void StepperController::maximizeHoldCurrent(size_t channel)
   if (channel < getChannelCount())
   {
     Driver & driver = drivers_[channel];
-    TMC2130::Settings settings = driver.getSettings();
+    TMC2209::Settings settings = driver.getSettings();
 
     drivers_[channel].setHoldCurrent(settings.irun);
   }
@@ -299,9 +294,9 @@ void StepperController::setPwmGradient(size_t channel,
   }
 }
 
-size_t StepperController::getDriverChipSelectPin(size_t driver)
+HardwareSerial & StepperController::getDriverSerial(size_t driver)
 {
-  return constants::chip_select_pins[driver];
+  return *(constants::driver_serial_ptrs[driver]);
 }
 
 void StepperController::setChannelCountHandler()
@@ -336,7 +331,7 @@ void StepperController::invertDriverDirectionHandler(size_t channel)
   bool invert_driver_direction;
   invert_driver_direction_property.getElementValue(channel,invert_driver_direction);
 
-  // TMC2130 direction is backwards from other drivers
+  // TMC2209 direction is backwards from other drivers
   if (invert_driver_direction)
   {
     drivers_[channel].disableInverseMotorDirection();
@@ -400,22 +395,22 @@ void StepperController::setZeroHoldCurrentModeHandler(size_t channel)
   const ConstantString * mode_ptr;
   modular_server_.property(constants::zero_hold_current_mode_property_name).getElementValue(channel,mode_ptr);
 
-  TMC2130::ZeroHoldCurrentMode zero_hold_current_mode = TMC2130::NORMAL;
+  TMC2209::ZeroHoldCurrentMode zero_hold_current_mode = TMC2209::NORMAL;
   if (mode_ptr == &constants::zero_hold_current_mode_normal)
   {
-    zero_hold_current_mode = TMC2130::NORMAL;
+    zero_hold_current_mode = TMC2209::NORMAL;
   }
   else if (mode_ptr == &constants::zero_hold_current_mode_freewheeling)
   {
-    zero_hold_current_mode = TMC2130::FREEWHEELING;
-  }
-  else if (mode_ptr == &constants::zero_hold_current_mode_braking)
-  {
-    zero_hold_current_mode = TMC2130::BRAKING;
+    zero_hold_current_mode = TMC2209::FREEWHEELING;
   }
   else if (mode_ptr == &constants::zero_hold_current_mode_strong_braking)
   {
-    zero_hold_current_mode = TMC2130::STRONG_BRAKING;
+    zero_hold_current_mode = TMC2209::STRONG_BRAKING;
+  }
+  else if (mode_ptr == &constants::zero_hold_current_mode_braking)
+  {
+    zero_hold_current_mode = TMC2209::BRAKING;
   }
   Driver & driver = drivers_[channel];
   driver.setZeroHoldCurrentMode(zero_hold_current_mode);
@@ -434,19 +429,21 @@ void StepperController::getDriversStatusHandler()
     Driver & driver = drivers_[channel];
     modular_server_.response().write(constants::communicating_string,driver.communicating());
 
-    TMC2130::Status status = driver.getStatus();
-    long load_percent = map(status.load,0,TMC2130::LOAD_MAX,constants::percent_min,constants::percent_max);
-    modular_server_.response().write(constants::load_string,load_percent);
-    modular_server_.response().write(constants::full_step_active_string,status.full_step_active);
-    long current_scaling_percent = map(status.current_scaling,0,TMC2130::CURRENT_SCALING_MAX,constants::percent_min,constants::percent_max);
-    modular_server_.response().write(constants::current_scaling_string,current_scaling_percent);
-    modular_server_.response().write(constants::stall_string,status.stall);
-    modular_server_.response().write(constants::over_temperature_shutdown_string,status.over_temperature_shutdown);
+    TMC2209::Status status = driver.getStatus();
     modular_server_.response().write(constants::over_temperature_warning_string,status.over_temperature_warning);
+    modular_server_.response().write(constants::over_temperature_shutdown_string,status.over_temperature_shutdown);
     modular_server_.response().write(constants::short_to_ground_a_string,status.short_to_ground_a);
     modular_server_.response().write(constants::short_to_ground_b_string,status.short_to_ground_b);
+    modular_server_.response().write(constants::low_side_short_a_string,status.low_side_short_a);
+    modular_server_.response().write(constants::low_side_short_b_string,status.low_side_short_b);
     modular_server_.response().write(constants::open_load_a_string,status.open_load_a);
     modular_server_.response().write(constants::open_load_b_string,status.open_load_b);
+    modular_server_.response().write(constants::over_temperature_120c_string,status.over_temperature_120c);
+    modular_server_.response().write(constants::over_temperature_143c_string,status.over_temperature_143c);
+    modular_server_.response().write(constants::over_temperature_150c_string,status.over_temperature_150c);
+    modular_server_.response().write(constants::over_temperature_157c_string,status.over_temperature_157c);
+    modular_server_.response().write(constants::current_scaling_string,status.current_scaling);
+    modular_server_.response().write(constants::stealth_mode_string,status.stealth_mode);
     modular_server_.response().write(constants::standstill_string,status.standstill);
 
     modular_server_.response().endObject();
@@ -468,32 +465,35 @@ void StepperController::getDriversSettingsHandler()
     Driver & driver = drivers_[channel];
     modular_server_.response().write(constants::communicating_string,driver.communicating());
 
-    TMC2130::Settings settings = driver.getSettings();
-    modular_server_.response().write(constants::stealth_chop_enabled_string,settings.stealth_chop_enabled);
-    modular_server_.response().write(constants::automatic_current_scaling_enabled_string,settings.automatic_current_scaling_enabled);
+    TMC2209::Settings settings = driver.getSettings();
+
+    modular_server_.response().write(constants::microsteps_per_step_string,settings.microsteps_per_step);
+    modular_server_.response().write(constants::inverse_motor_direction_enabled_string,settings.inverse_motor_direction_enabled);
+    modular_server_.response().write(constants::spread_cycle_enabled_string,settings.spread_cycle_enabled);
     const ConstantString * zero_hold_current_mode_ptr = NULL;
-    if (settings.zero_hold_current_mode == TMC2130::NORMAL)
+    if (settings.zero_hold_current_mode == TMC2209::NORMAL)
     {
       zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_normal;
     }
-    else if (settings.zero_hold_current_mode == TMC2130::FREEWHEELING)
+    else if (settings.zero_hold_current_mode == TMC2209::FREEWHEELING)
     {
       zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_freewheeling;
     }
-    else if (settings.zero_hold_current_mode == TMC2130::BRAKING)
+    else if (settings.zero_hold_current_mode == TMC2209::BRAKING)
     {
       zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_braking;
     }
-    else if (settings.zero_hold_current_mode == TMC2130::STRONG_BRAKING)
+    else if (settings.zero_hold_current_mode == TMC2209::STRONG_BRAKING)
     {
       zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_strong_braking;
     }
     modular_server_.response().write(constants::zero_hold_current_mode_property_name,*zero_hold_current_mode_ptr);
-    modular_server_.response().write(constants::pwm_offset_string,settings.pwm_offset);
-    modular_server_.response().write(constants::pwm_gradient_string,settings.pwm_gradient);
     modular_server_.response().write(constants::irun_string,settings.irun);
     modular_server_.response().write(constants::ihold_string,settings.ihold);
     modular_server_.response().write(constants::iholddelay_string,settings.iholddelay);
+    modular_server_.response().write(constants::automatic_current_scaling_enabled_string,settings.automatic_current_scaling_enabled);
+    modular_server_.response().write(constants::pwm_offset_string,settings.pwm_offset);
+    modular_server_.response().write(constants::pwm_gradient_string,settings.pwm_gradient);
 
     modular_server_.response().endObject();
   }

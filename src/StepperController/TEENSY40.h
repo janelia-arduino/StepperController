@@ -20,7 +20,7 @@ enum{PIN_COUNT_MAX=1};
 
 enum{CHANNEL_COUNT_MAX=3};
 
-extern const size_t chip_select_pins[CHANNEL_COUNT_MAX];
+extern HardwareSerial * driver_serial_ptrs[CHANNEL_COUNT_MAX];
 
 // Pins
 

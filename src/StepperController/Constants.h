@@ -34,26 +34,33 @@ extern const size_t controller_count;
 extern ConstantString communicating_string;
 
 // Status Strings
-extern ConstantString load_string;
-extern ConstantString full_step_active_string;
-extern ConstantString current_scaling_string;
-extern ConstantString stall_string;
-extern ConstantString over_temperature_shutdown_string;
 extern ConstantString over_temperature_warning_string;
+extern ConstantString over_temperature_shutdown_string;
 extern ConstantString short_to_ground_a_string;
 extern ConstantString short_to_ground_b_string;
+extern ConstantString low_side_short_a_string;
+extern ConstantString low_side_short_b_string;
 extern ConstantString open_load_a_string;
 extern ConstantString open_load_b_string;
+extern ConstantString over_temperature_120c_string;
+extern ConstantString over_temperature_143c_string;
+extern ConstantString over_temperature_150c_string;
+extern ConstantString over_temperature_157c_string;
+extern ConstantString current_scaling_string;
+extern ConstantString stealth_mode_string;
 extern ConstantString standstill_string;
 
+
 // Setting Strings
-extern ConstantString stealth_chop_enabled_string;
-extern ConstantString automatic_current_scaling_enabled_string;
-extern ConstantString pwm_offset_string;
-extern ConstantString pwm_gradient_string;
+extern ConstantString microsteps_per_step_string;
+extern ConstantString inverse_motor_direction_enabled_string;
+extern ConstantString spread_cycle_enabled_string;
 extern ConstantString irun_string;
 extern ConstantString ihold_string;
 extern ConstantString iholddelay_string;
+extern ConstantString automatic_current_scaling_enabled_string;
+extern ConstantString pwm_offset_string;
+extern ConstantString pwm_gradient_string;
 
 // Pins
 
@@ -137,7 +144,4 @@ extern ConstantString set_pwm_gradient_function_name;
 }
 }
 #include "TEENSY40.h"
-#include "TEENSY41.h"
-#include "5x3.h"
-#include "3x2.h"
 #endif

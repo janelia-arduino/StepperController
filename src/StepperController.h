@@ -14,7 +14,7 @@
 #include <ConstantVariable.h>
 #include <Functor.h>
 
-#include <TMC2130.h>
+#include <TMC2209.h>
 
 #include <ModularServer.h>
 #include <ModularDeviceBase.h>
@@ -26,7 +26,6 @@
 class StepperController : public StepDirController
 {
 public:
-  StepperController();
   virtual void setup();
 
   virtual void reinitialize();
@@ -52,7 +51,7 @@ public:
     uint8_t pwm_amplitude);
 
 protected:
-  virtual size_t getDriverChipSelectPin(size_t driver);
+  virtual HardwareSerial & getDriverSerial(size_t driver);
   // Handlers
   void setChannelCountHandler();
 
@@ -64,7 +63,7 @@ private:
   modular_server::Function functions_[stepper_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[stepper_controller::constants::CALLBACK_COUNT_MAX];
 
-  typedef TMC2130 Driver;
+  typedef TMC2209 Driver;
   Driver drivers_[stepper_controller::constants::CHANNEL_COUNT_MAX];
 
   // Handlers
@@ -88,7 +87,6 @@ private:
   void restoreRunCurrentHandler();
   void setPwmOffsetHandler();
   void setPwmGradientHandler();
-  void getPwmScalesHandler();
 
 };
 

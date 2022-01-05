@@ -19,9 +19,9 @@ CONSTANT_STRING(firmware_name,"StepperController");
 const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
-  .version_major=2,
-  .version_minor=5,
-  .version_patch=2,
+  .version_major=3,
+  .version_minor=0,
+  .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
@@ -29,26 +29,32 @@ CONSTANT_STRING(hardware_name,"stepper_controller");
 CONSTANT_STRING(communicating_string,"communicating");
 
 // Status Strings
-CONSTANT_STRING(load_string,"load");
-CONSTANT_STRING(full_step_active_string,"full_step_active");
-CONSTANT_STRING(current_scaling_string,"current_scaling");
-CONSTANT_STRING(stall_string,"stall");
-CONSTANT_STRING(over_temperature_shutdown_string,"over_temperature_shutdown");
 CONSTANT_STRING(over_temperature_warning_string,"over_temperature_warning");
+CONSTANT_STRING(over_temperature_shutdown_string,"over_temperature_shutdown");
 CONSTANT_STRING(short_to_ground_a_string,"short_to_ground_a");
 CONSTANT_STRING(short_to_ground_b_string,"short_to_ground_b");
+CONSTANT_STRING(low_side_short_a_string,"low_side_short_a");
+CONSTANT_STRING(low_side_short_b_string,"low_side_short_b");
 CONSTANT_STRING(open_load_a_string,"open_load_a");
 CONSTANT_STRING(open_load_b_string,"open_load_b");
+CONSTANT_STRING(over_temperature_120c_string,"over_temperature_120c");
+CONSTANT_STRING(over_temperature_143c_string,"over_temperature_143c");
+CONSTANT_STRING(over_temperature_150c_string,"over_temperature_150c");
+CONSTANT_STRING(over_temperature_157c_string,"over_temperature_157c");
+CONSTANT_STRING(current_scaling_string,"current_scaling");
+CONSTANT_STRING(stealth_mode_string,"stealth_mode");
 CONSTANT_STRING(standstill_string,"standstill");
 
 // Setting Strings
-CONSTANT_STRING(stealth_chop_enabled_string,"stealth_chop_enabled");
-CONSTANT_STRING(automatic_current_scaling_enabled_string,"automatic_current_scaling_enabled");
-CONSTANT_STRING(pwm_offset_string,"pwm_offset");
-CONSTANT_STRING(pwm_gradient_string,"pwm_gradient");
+CONSTANT_STRING(microsteps_per_step_string,"microsteps_per_step");
+CONSTANT_STRING(inverse_motor_direction_enabled_string,"inverse_motor_direction_enabled");
+CONSTANT_STRING(spread_cycle_enabled_string,"spread_cycle_enabled");
 CONSTANT_STRING(irun_string,"irun");
 CONSTANT_STRING(ihold_string,"ihold");
 CONSTANT_STRING(iholddelay_string,"iholddelay");
+CONSTANT_STRING(automatic_current_scaling_enabled_string,"automatic_current_scaling_enabled");
+CONSTANT_STRING(pwm_offset_string,"pwm_offset");
+CONSTANT_STRING(pwm_gradient_string,"pwm_gradient");
 
 // Pins
 
@@ -107,14 +113,14 @@ const long microsteps_per_step_element_default = 256;
 CONSTANT_STRING(zero_hold_current_mode_property_name,"zeroHoldCurrentMode");
 CONSTANT_STRING(zero_hold_current_mode_normal,"NORMAL");
 CONSTANT_STRING(zero_hold_current_mode_freewheeling,"FREEWHEELING");
-CONSTANT_STRING(zero_hold_current_mode_braking,"BRAKING");
 CONSTANT_STRING(zero_hold_current_mode_strong_braking,"STRONG_BRAKING");
+CONSTANT_STRING(zero_hold_current_mode_braking,"BRAKING");
 modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH] =
 {
   {.cs_ptr=&zero_hold_current_mode_normal},
   {.cs_ptr=&zero_hold_current_mode_freewheeling},
-  {.cs_ptr=&zero_hold_current_mode_braking},
   {.cs_ptr=&zero_hold_current_mode_strong_braking},
+  {.cs_ptr=&zero_hold_current_mode_braking},
 };
 const ConstantString * const zero_hold_current_mode_ptr_element_default = &zero_hold_current_mode_freewheeling;
 
