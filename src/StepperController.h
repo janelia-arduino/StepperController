@@ -32,10 +32,10 @@ public:
 
   virtual size_t getChannelCount();
 
-  void enableAutomaticCurrentScaling(size_t channel);
-  void disableAutomaticCurrentScaling(size_t channel);
+  virtual void enable(size_t channel);
+  virtual void disable(size_t channel);
 
-  void zeroHoldCurrent(size_t channel);
+  void standstill(size_t channel);
   void maximizeHoldCurrent(size_t channel);
   void modifyHoldCurrent(size_t channel,
     uint8_t current);
@@ -74,12 +74,17 @@ private:
   void preSetMicrostepsPerStepHandler(size_t channel);
   void postSetMicrostepsPerStepHandler(size_t channel);
   void setMicrostepsPerStepHandler(size_t channel);
-  void setZeroHoldCurrentModeHandler(size_t channel);
+  void setStandstillModeHandler(size_t channel);
+  void automaticCurrentScalingHandler(size_t channel);
+  void automaticGradientAdaptationHandler(size_t channel);
+  void coolStepDurationThresholdHandler(size_t channel);
+  void coolStepCurrentIncrementHandler(size_t channel);
+  void coolStepMeasurementCountHandler(size_t channel);
+  void coolStepEnabledHandler(size_t channel);
   void getDriversStatusHandler();
   void getDriversSettingsHandler();
-  void enableAutomaticCurrentScalingHandler();
-  void disableAutomaticCurrentScalingHandler();
-  void zeroHoldCurrentHandler();
+  void getDriversMeasurementsHandler();
+  void standstillHandler();
   void maximizeHoldCurrentHandler();
   void modifyHoldCurrentHandler();
   void restoreHoldCurrentHandler();

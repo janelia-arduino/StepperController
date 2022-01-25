@@ -42,19 +42,35 @@ CONSTANT_STRING(over_temperature_143c_string,"over_temperature_143c");
 CONSTANT_STRING(over_temperature_150c_string,"over_temperature_150c");
 CONSTANT_STRING(over_temperature_157c_string,"over_temperature_157c");
 CONSTANT_STRING(current_scaling_string,"current_scaling");
-CONSTANT_STRING(stealth_mode_string,"stealth_mode");
+CONSTANT_STRING(stealth_chop_mode_string,"stealth_chop_mode");
 CONSTANT_STRING(standstill_string,"standstill");
 
 // Setting Strings
+CONSTANT_STRING(enabled_string,"enabled");
 CONSTANT_STRING(microsteps_per_step_string,"microsteps_per_step");
 CONSTANT_STRING(inverse_motor_direction_enabled_string,"inverse_motor_direction_enabled");
-CONSTANT_STRING(spread_cycle_enabled_string,"spread_cycle_enabled");
-CONSTANT_STRING(irun_string,"irun");
-CONSTANT_STRING(ihold_string,"ihold");
-CONSTANT_STRING(iholddelay_string,"iholddelay");
+CONSTANT_STRING(stealth_chop_enabled_string,"stealth_chop_enabled");
+CONSTANT_STRING(irun_percent_string,"irun_percent");
+CONSTANT_STRING(irun_register_value_string,"irun_register_value");
+CONSTANT_STRING(ihold_percent_string,"ihold_percent");
+CONSTANT_STRING(ihold_register_value_string,"ihold_register_value");
+CONSTANT_STRING(iholddelay_percent_string,"iholddelay_percent");
+CONSTANT_STRING(iholddelay_register_value_string,"iholddelay_register_value");
 CONSTANT_STRING(automatic_current_scaling_enabled_string,"automatic_current_scaling_enabled");
+CONSTANT_STRING(automatic_gradient_adaptation_enabled_string,"automatic_gradient_adaptation_enabled");
 CONSTANT_STRING(pwm_offset_string,"pwm_offset");
 CONSTANT_STRING(pwm_gradient_string,"pwm_gradient");
+CONSTANT_STRING(cool_step_enabled_string,"cool_step_enabled");
+CONSTANT_STRING(analog_current_scaling_enabled_string,"analog_current_scaling_enabled");
+CONSTANT_STRING(internal_sense_resistors_enabled_string,"internal_sense_resistors_enabled");
+
+// Measurement Strings
+CONSTANT_STRING(interstep_duration_string,"interstep_duration");
+CONSTANT_STRING(stall_guard_result_string,"stall_guard_result");
+CONSTANT_STRING(pwm_scale_sum_string,"pwm_scale_sum");
+CONSTANT_STRING(pwm_scale_auto_string,"pwm_scale_auto");
+CONSTANT_STRING(pwm_offset_auto_string,"pwm_offset_auto");
+CONSTANT_STRING(pwm_gradient_auto_string,"pwm_gradient_auto");
 
 // Pins
 
@@ -87,13 +103,13 @@ const bool invert_driver_direction_element_default = false;
 CONSTANT_STRING(run_current_property_name,"runCurrent");
 const long percent_min = 0;
 const long percent_max = 100;
-const long run_current_element_default = 20;
+const long run_current_element_default = 40;
 
 CONSTANT_STRING(hold_current_property_name,"holdCurrent");
-const long hold_current_element_default = 10;
+const long hold_current_element_default = 0;
 
 CONSTANT_STRING(hold_delay_property_name,"holdDelay");
-const long hold_delay_element_default = 50;
+const long hold_delay_element_default = 10;
 
 CONSTANT_STRING(microsteps_per_step_property_name,"microstepsPerStep");
 modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH] =
@@ -110,19 +126,71 @@ modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_
 };
 const long microsteps_per_step_element_default = 256;
 
-CONSTANT_STRING(zero_hold_current_mode_property_name,"zeroHoldCurrentMode");
-CONSTANT_STRING(zero_hold_current_mode_normal,"NORMAL");
-CONSTANT_STRING(zero_hold_current_mode_freewheeling,"FREEWHEELING");
-CONSTANT_STRING(zero_hold_current_mode_strong_braking,"STRONG_BRAKING");
-CONSTANT_STRING(zero_hold_current_mode_braking,"BRAKING");
-modular_server::SubsetMemberType zero_hold_current_mode_ptr_subset[ZERO_HOLD_CURRENT_MODE_SUBSET_LENGTH] =
+CONSTANT_STRING(standstill_mode_property_name,"standstillMode");
+CONSTANT_STRING(standstill_mode_normal,"NORMAL");
+CONSTANT_STRING(standstill_mode_freewheeling,"FREEWHEELING");
+CONSTANT_STRING(standstill_mode_strong_braking,"STRONG_BRAKING");
+CONSTANT_STRING(standstill_mode_braking,"BRAKING");
+modular_server::SubsetMemberType standstill_mode_ptr_subset[STANDSTILL_MODE_SUBSET_LENGTH] =
 {
-  {.cs_ptr=&zero_hold_current_mode_normal},
-  {.cs_ptr=&zero_hold_current_mode_freewheeling},
-  {.cs_ptr=&zero_hold_current_mode_strong_braking},
-  {.cs_ptr=&zero_hold_current_mode_braking},
+  {.cs_ptr=&standstill_mode_normal},
+  {.cs_ptr=&standstill_mode_freewheeling},
+  {.cs_ptr=&standstill_mode_strong_braking},
+  {.cs_ptr=&standstill_mode_braking},
 };
-const ConstantString * const zero_hold_current_mode_ptr_element_default = &zero_hold_current_mode_freewheeling;
+const ConstantString * const standstill_mode_ptr_element_default = &standstill_mode_strong_braking;
+
+CONSTANT_STRING(automatic_current_scaling_property_name,"automaticCurrentScaling");
+const bool automatic_current_scaling_element_default = false;
+
+CONSTANT_STRING(automatic_gradient_adaptation_property_name,"automaticGradientAdaptation");
+const bool automatic_gradient_adaptation_element_default = false;
+
+CONSTANT_STRING(cool_step_lower_threshold_property_name,"coolStepLowerThreshold");
+const long cool_step_lower_threshold_min = 1;
+const long cool_step_lower_threshold_max = 15;
+const long cool_step_lower_threshold_element_default = 1;
+
+CONSTANT_STRING(cool_step_upper_threshold_property_name,"coolStepUpperThreshold");
+const long cool_step_upper_threshold_min = 0;
+const long cool_step_upper_threshold_max = 15;
+const long cool_step_upper_threshold_element_default = 0;
+
+CONSTANT_STRING(cool_step_duration_threshold_property_name,"coolStepDurationThreshold");
+const long cool_step_duration_threshold_min = 0;
+const long cool_step_duration_threshold_max = 1048576;
+const long cool_step_duration_threshold_element_default = 2000;
+
+CONSTANT_STRING(cool_step_current_increment_property_name,"coolStepCurrentIncrement");
+CONSTANT_STRING(cool_step_current_increment_1,"CURRENT_INCREMENT_1");
+CONSTANT_STRING(cool_step_current_increment_2,"CURRENT_INCREMENT_2");
+CONSTANT_STRING(cool_step_current_increment_4,"CURRENT_INCREMENT_4");
+CONSTANT_STRING(cool_step_current_increment_8,"CURRENT_INCREMENT_8");
+modular_server::SubsetMemberType cool_step_current_increment_ptr_subset[COOL_STEP_CURRENT_INCREMENT_SUBSET_LENGTH] =
+{
+  {.cs_ptr=&cool_step_current_increment_1},
+  {.cs_ptr=&cool_step_current_increment_2},
+  {.cs_ptr=&cool_step_current_increment_4},
+  {.cs_ptr=&cool_step_current_increment_8},
+};
+const ConstantString * const cool_step_current_increment_ptr_element_default = &cool_step_current_increment_4;
+
+CONSTANT_STRING(cool_step_measurement_count_property_name,"coolStepMeasurementCount");
+CONSTANT_STRING(cool_step_measurement_count_32,"MEASUREMENT_COUNT_32");
+CONSTANT_STRING(cool_step_measurement_count_8,"MEASUREMENT_COUNT_8");
+CONSTANT_STRING(cool_step_measurement_count_2,"MEASUREMENT_COUNT_2");
+CONSTANT_STRING(cool_step_measurement_count_1,"MEASUREMENT_COUNT_1");
+modular_server::SubsetMemberType cool_step_measurement_count_ptr_subset[COOL_STEP_MEASUREMENT_COUNT_SUBSET_LENGTH] =
+{
+  {.cs_ptr=&cool_step_measurement_count_32},
+  {.cs_ptr=&cool_step_measurement_count_8},
+  {.cs_ptr=&cool_step_measurement_count_2},
+  {.cs_ptr=&cool_step_measurement_count_1},
+};
+const ConstantString * const cool_step_measurement_count_ptr_element_default = &cool_step_measurement_count_2;
+
+CONSTANT_STRING(cool_step_enabled_property_name,"coolStepEnabled");
+const bool cool_step_enabled_element_default = true;
 
 // Parameters
 CONSTANT_STRING(pwm_amplitude_parameter_name,"pwm_amplitude");
@@ -134,9 +202,8 @@ CONSTANT_STRING(current_parameter_name,"current");
 // Functions
 CONSTANT_STRING(get_drivers_status_function_name,"getDriversStatus");
 CONSTANT_STRING(get_drivers_settings_function_name,"getDriversSettings");
-CONSTANT_STRING(enable_automatic_current_scaling_function_name,"enableAutomaticCurrentScaling");
-CONSTANT_STRING(disable_automatic_current_scaling_function_name,"disableAutomaticCurrentScaling");
-CONSTANT_STRING(zero_hold_current_function_name,"zeroHoldCurrent");
+CONSTANT_STRING(get_drivers_measurements_function_name,"getDriversMeasurements");
+CONSTANT_STRING(standstill_function_name,"standstill");
 CONSTANT_STRING(maximize_hold_current_function_name,"maximizeHoldCurrent");
 CONSTANT_STRING(modify_hold_current_function_name,"modifyHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");

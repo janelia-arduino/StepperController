@@ -103,9 +103,36 @@ void StepperController::setup()
   microsteps_per_step_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::preSetMicrostepsPerStepHandler));
   microsteps_per_step_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::postSetMicrostepsPerStepHandler));
 
-  modular_server::Property & zero_hold_current_mode_property = modular_server_.createProperty(constants::zero_hold_current_mode_property_name,constants::zero_hold_current_mode_ptr_default);
-  zero_hold_current_mode_property.setSubset(constants::zero_hold_current_mode_ptr_subset);
-  zero_hold_current_mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setZeroHoldCurrentModeHandler));
+  modular_server::Property & standstill_mode_property = modular_server_.createProperty(constants::standstill_mode_property_name,constants::standstill_mode_ptr_default);
+  standstill_mode_property.setSubset(constants::standstill_mode_ptr_subset);
+  standstill_mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setStandstillModeHandler));
+
+  modular_server::Property & automatic_current_scaling_property = modular_server_.createProperty(constants::automatic_current_scaling_property_name,constants::automatic_current_scaling_default);
+  automatic_current_scaling_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::automaticCurrentScalingHandler));
+
+  modular_server::Property & automatic_gradient_adaptation_property = modular_server_.createProperty(constants::automatic_gradient_adaptation_property_name,constants::automatic_gradient_adaptation_default);
+  automatic_gradient_adaptation_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::automaticGradientAdaptationHandler));
+
+  modular_server::Property & cool_step_lower_threshold_property = modular_server_.createProperty(constants::cool_step_lower_threshold_property_name,constants::cool_step_lower_threshold_default);
+  cool_step_lower_threshold_property.setRange(constants::cool_step_lower_threshold_min,constants::cool_step_lower_threshold_max);
+
+  modular_server::Property & cool_step_upper_threshold_property = modular_server_.createProperty(constants::cool_step_upper_threshold_property_name,constants::cool_step_upper_threshold_default);
+  cool_step_upper_threshold_property.setRange(constants::cool_step_upper_threshold_min,constants::cool_step_upper_threshold_max);
+
+  modular_server::Property & cool_step_duration_threshold_property = modular_server_.createProperty(constants::cool_step_duration_threshold_property_name,constants::cool_step_duration_threshold_default);
+  cool_step_duration_threshold_property.setRange(constants::cool_step_duration_threshold_min,constants::cool_step_duration_threshold_max);
+  cool_step_duration_threshold_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::coolStepDurationThresholdHandler));
+
+  modular_server::Property & cool_step_current_increment_property = modular_server_.createProperty(constants::cool_step_current_increment_property_name,constants::cool_step_current_increment_ptr_default);
+  cool_step_current_increment_property.setSubset(constants::cool_step_current_increment_ptr_subset);
+  cool_step_current_increment_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::coolStepCurrentIncrementHandler));
+
+  modular_server::Property & cool_step_measurement_count_property = modular_server_.createProperty(constants::cool_step_measurement_count_property_name,constants::cool_step_measurement_count_ptr_default);
+  cool_step_measurement_count_property.setSubset(constants::cool_step_measurement_count_ptr_subset);
+  cool_step_measurement_count_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::coolStepMeasurementCountHandler));
+
+  modular_server::Property & cool_step_enabled_property = modular_server_.createProperty(constants::cool_step_enabled_property_name,constants::cool_step_enabled_default);
+  cool_step_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::coolStepEnabledHandler));
 
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.parameter(step_dir_controller::constants::channel_parameter_name);
@@ -118,7 +145,8 @@ void StepperController::setup()
   current_parameter.setRange(constants::percent_min,constants::percent_max);
 
   setChannelCountHandler();
-  reinitialize();
+  StepperController::reinitialize();
+  disableAll();
 
   // Functions
   modular_server::Function & get_drivers_status_function = modular_server_.createFunction(constants::get_drivers_status_function_name);
@@ -131,17 +159,14 @@ void StepperController::setup()
   get_drivers_settings_function.setResultTypeArray();
   get_drivers_settings_function.setResultTypeObject();
 
-  modular_server::Function & enable_automatic_current_scaling_function = modular_server_.createFunction(constants::enable_automatic_current_scaling_function_name);
-  enable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::enableAutomaticCurrentScalingHandler));
-  enable_automatic_current_scaling_function.addParameter(channel_parameter);
+  modular_server::Function & get_drivers_measurements_function = modular_server_.createFunction(constants::get_drivers_measurements_function_name);
+  get_drivers_measurements_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::getDriversMeasurementsHandler));
+  get_drivers_measurements_function.setResultTypeArray();
+  get_drivers_measurements_function.setResultTypeObject();
 
-  modular_server::Function & disable_automatic_current_scaling_function = modular_server_.createFunction(constants::disable_automatic_current_scaling_function_name);
-  disable_automatic_current_scaling_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::disableAutomaticCurrentScalingHandler));
-  disable_automatic_current_scaling_function.addParameter(channel_parameter);
-
-  modular_server::Function & zero_hold_current_function = modular_server_.createFunction(constants::zero_hold_current_function_name);
-  zero_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::zeroHoldCurrentHandler));
-  zero_hold_current_function.addParameter(channel_parameter);
+  modular_server::Function & standstill_function = modular_server_.createFunction(constants::standstill_function_name);
+  standstill_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::standstillHandler));
+  standstill_function.addParameter(channel_parameter);
 
   modular_server::Function & maximize_hold_current_function = modular_server_.createFunction(constants::maximize_hold_current_function_name);
   maximize_hold_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::maximizeHoldCurrentHandler));
@@ -186,14 +211,22 @@ void StepperController::reinitialize()
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     resetWatchdog();
-    // invertDriverDirectionHandler(channel);
-  //   setRunCurrentHandler(channel);
-  //   setHoldCurrentHandler(channel);
-  //   setHoldDelayHandler(channel);
-  //   setMicrostepsPerStepHandler(channel);
-  //   setZeroHoldCurrentModeHandler(channel);
+    Driver & driver = drivers_[channel];
+    if (not driver.communicating())
+    {
+      continue;
+    }
+    invertDriverDirectionHandler(channel);
+    setRunCurrentHandler(channel);
+    setHoldCurrentHandler(channel);
+    setHoldDelayHandler(channel);
+    setMicrostepsPerStepHandler(channel);
+    setStandstillModeHandler(channel);
+    automaticCurrentScalingHandler(channel);
+    coolStepDurationThresholdHandler(channel);
+    coolStepCurrentIncrementHandler(channel);
+    coolStepEnabledHandler(channel);
   }
-  enableAll();
 }
 
 size_t StepperController::getChannelCount()
@@ -207,23 +240,31 @@ size_t StepperController::getChannelCount()
   return channel_count;
 }
 
-void StepperController::enableAutomaticCurrentScaling(size_t channel)
+void StepperController::enable(size_t channel)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    drivers_[channel].enableAutomaticCurrentScaling();
+    return;
   }
+  Driver & driver = drivers_[channel];
+  driver.enable();
+
+  enabled_[channel] = true;
 }
 
-void StepperController::disableAutomaticCurrentScaling(size_t channel)
+void StepperController::disable(size_t channel)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    drivers_[channel].disableAutomaticCurrentScaling();
+    return;
   }
+  Driver & driver = drivers_[channel];
+  driver.disable();
+
+  enabled_[channel] = false;
 }
 
-void StepperController::zeroHoldCurrent(size_t channel)
+void StepperController::standstill(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -235,10 +276,7 @@ void StepperController::maximizeHoldCurrent(size_t channel)
 {
   if (channel < getChannelCount())
   {
-    Driver & driver = drivers_[channel];
-    TMC2209::Settings settings = driver.getSettings();
-
-    drivers_[channel].setHoldCurrent(settings.irun);
+    drivers_[channel].setHoldCurrent(constants::percent_max);
   }
 }
 
@@ -320,8 +358,32 @@ void StepperController::setChannelCountHandler()
   modular_server::Property & microsteps_per_step_property = modular_server_.property(constants::microsteps_per_step_property_name);
   microsteps_per_step_property.setArrayLengthRange(channel_count,channel_count);
 
-  modular_server::Property & zero_hold_current_mode_property = modular_server_.property(constants::zero_hold_current_mode_property_name);
-  zero_hold_current_mode_property.setArrayLengthRange(channel_count,channel_count);
+  modular_server::Property & standstill_mode_property = modular_server_.property(constants::standstill_mode_property_name);
+  standstill_mode_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & automatic_current_scaling_property = modular_server_.property(constants::automatic_current_scaling_property_name);
+  automatic_current_scaling_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & automatic_gradient_adaptation_property = modular_server_.property(constants::automatic_gradient_adaptation_property_name);
+  automatic_gradient_adaptation_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & cool_step_lower_threshold_property = modular_server_.property(constants::cool_step_lower_threshold_property_name);
+  cool_step_lower_threshold_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & cool_step_upper_threshold_property = modular_server_.property(constants::cool_step_upper_threshold_property_name);
+  cool_step_upper_threshold_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & cool_step_duration_threshold_property = modular_server_.property(constants::cool_step_duration_threshold_property_name);
+  cool_step_duration_threshold_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & cool_step_current_increment_property = modular_server_.property(constants::cool_step_current_increment_property_name);
+  cool_step_current_increment_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & cool_step_measurement_count_property = modular_server_.property(constants::cool_step_measurement_count_property_name);
+  cool_step_measurement_count_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & cool_step_enabled_property = modular_server_.property(constants::cool_step_enabled_property_name);
+  cool_step_enabled_property.setArrayLengthRange(channel_count,channel_count);
 
 }
 
@@ -331,14 +393,13 @@ void StepperController::invertDriverDirectionHandler(size_t channel)
   bool invert_driver_direction;
   invert_driver_direction_property.getElementValue(channel,invert_driver_direction);
 
-  // TMC2209 direction is backwards from other drivers
   if (invert_driver_direction)
   {
-    drivers_[channel].disableInverseMotorDirection();
+    drivers_[channel].enableInverseMotorDirection();
   }
   else
   {
-    drivers_[channel].enableInverseMotorDirection();
+    drivers_[channel].disableInverseMotorDirection();
   }
 }
 
@@ -390,30 +451,147 @@ void StepperController::setMicrostepsPerStepHandler(size_t channel)
   driver.setMicrostepsPerStep(microsteps_per_step);
 }
 
-void StepperController::setZeroHoldCurrentModeHandler(size_t channel)
+void StepperController::setStandstillModeHandler(size_t channel)
 {
   const ConstantString * mode_ptr;
-  modular_server_.property(constants::zero_hold_current_mode_property_name).getElementValue(channel,mode_ptr);
+  modular_server_.property(constants::standstill_mode_property_name).getElementValue(channel,mode_ptr);
 
-  TMC2209::ZeroHoldCurrentMode zero_hold_current_mode = TMC2209::NORMAL;
-  if (mode_ptr == &constants::zero_hold_current_mode_normal)
+  TMC2209::StandstillMode standstill_mode = TMC2209::NORMAL;
+  if (mode_ptr == &constants::standstill_mode_normal)
   {
-    zero_hold_current_mode = TMC2209::NORMAL;
+    standstill_mode = TMC2209::NORMAL;
   }
-  else if (mode_ptr == &constants::zero_hold_current_mode_freewheeling)
+  else if (mode_ptr == &constants::standstill_mode_freewheeling)
   {
-    zero_hold_current_mode = TMC2209::FREEWHEELING;
+    standstill_mode = TMC2209::FREEWHEELING;
   }
-  else if (mode_ptr == &constants::zero_hold_current_mode_strong_braking)
+  else if (mode_ptr == &constants::standstill_mode_strong_braking)
   {
-    zero_hold_current_mode = TMC2209::STRONG_BRAKING;
+    standstill_mode = TMC2209::STRONG_BRAKING;
   }
-  else if (mode_ptr == &constants::zero_hold_current_mode_braking)
+  else if (mode_ptr == &constants::standstill_mode_braking)
   {
-    zero_hold_current_mode = TMC2209::BRAKING;
+    standstill_mode = TMC2209::BRAKING;
   }
   Driver & driver = drivers_[channel];
-  driver.setZeroHoldCurrentMode(zero_hold_current_mode);
+  driver.setStandstillMode(standstill_mode);
+}
+
+void StepperController::automaticCurrentScalingHandler(size_t channel)
+{
+  modular_server::Property & automatic_current_scaling_property = modular_server_.property(constants::automatic_current_scaling_property_name);
+  bool automatic_current_scaling;
+  automatic_current_scaling_property.getElementValue(channel,automatic_current_scaling);
+
+  if (automatic_current_scaling)
+  {
+    drivers_[channel].enableAutomaticCurrentScaling();
+  }
+  else
+  {
+    drivers_[channel].disableAutomaticCurrentScaling();
+  }
+}
+
+void StepperController::automaticGradientAdaptationHandler(size_t channel)
+{
+  modular_server::Property & automatic_gradient_adaptation_property = modular_server_.property(constants::automatic_gradient_adaptation_property_name);
+  bool automatic_gradient_adaptation;
+  automatic_gradient_adaptation_property.getElementValue(channel,automatic_gradient_adaptation);
+
+  if (automatic_gradient_adaptation)
+  {
+    drivers_[channel].enableAutomaticGradientAdaptation();
+  }
+  else
+  {
+    drivers_[channel].disableAutomaticGradientAdaptation();
+
+  }
+}
+
+void StepperController::coolStepDurationThresholdHandler(size_t channel)
+{
+  modular_server::Property & cool_step_duration_threshold_property = modular_server_.property(constants::cool_step_duration_threshold_property_name);
+  long cool_step_duration_threshold;
+  cool_step_duration_threshold_property.getElementValue(channel,cool_step_duration_threshold);
+
+  drivers_[channel].setCoolStepDurationThreshold(cool_step_duration_threshold);
+}
+
+void StepperController::coolStepCurrentIncrementHandler(size_t channel)
+{
+  const ConstantString * cool_step_current_increment_ptr;
+  modular_server_.property(constants::cool_step_current_increment_property_name).getElementValue(channel,cool_step_current_increment_ptr);
+
+  TMC2209::CurrentIncrement cool_step_current_increment = TMC2209::CURRENT_INCREMENT_4;
+  if (cool_step_current_increment_ptr == &constants::cool_step_current_increment_1)
+  {
+    cool_step_current_increment = TMC2209::CURRENT_INCREMENT_1;
+  }
+  else if (cool_step_current_increment_ptr == &constants::cool_step_current_increment_2)
+  {
+    cool_step_current_increment = TMC2209::CURRENT_INCREMENT_2;
+  }
+  else if (cool_step_current_increment_ptr == &constants::cool_step_current_increment_4)
+  {
+    cool_step_current_increment = TMC2209::CURRENT_INCREMENT_4;
+  }
+  else if (cool_step_current_increment_ptr == &constants::cool_step_current_increment_8)
+  {
+    cool_step_current_increment = TMC2209::CURRENT_INCREMENT_8;
+  }
+  Driver & driver = drivers_[channel];
+  driver.setCoolStepCurrentIncrement(cool_step_current_increment);
+}
+
+void StepperController::coolStepMeasurementCountHandler(size_t channel)
+{
+  const ConstantString * cool_step_measurement_count_ptr;
+  modular_server_.property(constants::cool_step_measurement_count_property_name).getElementValue(channel,cool_step_measurement_count_ptr);
+
+  TMC2209::MeasurementCount cool_step_measurement_count = TMC2209::MEASUREMENT_COUNT_2;
+  if (cool_step_measurement_count_ptr == &constants::cool_step_measurement_count_32)
+  {
+    cool_step_measurement_count = TMC2209::MEASUREMENT_COUNT_32;
+  }
+  else if (cool_step_measurement_count_ptr == &constants::cool_step_measurement_count_8)
+  {
+    cool_step_measurement_count = TMC2209::MEASUREMENT_COUNT_8;
+  }
+  else if (cool_step_measurement_count_ptr == &constants::cool_step_measurement_count_2)
+  {
+    cool_step_measurement_count = TMC2209::MEASUREMENT_COUNT_2;
+  }
+  else if (cool_step_measurement_count_ptr == &constants::cool_step_measurement_count_1)
+  {
+    cool_step_measurement_count = TMC2209::MEASUREMENT_COUNT_1;
+  }
+  Driver & driver = drivers_[channel];
+  driver.setCoolStepMeasurementCount(cool_step_measurement_count);
+}
+
+void StepperController::coolStepEnabledHandler(size_t channel)
+{
+  modular_server::Property & cool_step_enabled_property = modular_server_.property(constants::cool_step_enabled_property_name);
+  bool cool_step_enabled;
+  cool_step_enabled_property.getElementValue(channel,cool_step_enabled);
+
+  if (cool_step_enabled)
+  {
+    modular_server::Property & cool_step_lower_threshold_property = modular_server_.property(constants::cool_step_lower_threshold_property_name);
+    long cool_step_lower_threshold;
+    cool_step_lower_threshold_property.getElementValue(channel,cool_step_lower_threshold);
+    modular_server::Property & cool_step_upper_threshold_property = modular_server_.property(constants::cool_step_upper_threshold_property_name);
+    long cool_step_upper_threshold;
+    cool_step_upper_threshold_property.getElementValue(channel,cool_step_upper_threshold);
+    drivers_[channel].enableCoolStep(cool_step_lower_threshold,cool_step_upper_threshold);
+  }
+  else
+  {
+    drivers_[channel].disableCoolStep();
+
+  }
 }
 
 void StepperController::getDriversStatusHandler()
@@ -427,7 +605,14 @@ void StepperController::getDriversStatusHandler()
     modular_server_.response().beginObject();
 
     Driver & driver = drivers_[channel];
-    modular_server_.response().write(constants::communicating_string,driver.communicating());
+
+    bool communicating = driver.communicating();
+    modular_server_.response().write(constants::communicating_string,communicating);
+    if (not communicating)
+    {
+      modular_server_.response().endObject();
+      continue;
+    }
 
     TMC2209::Status status = driver.getStatus();
     modular_server_.response().write(constants::over_temperature_warning_string,status.over_temperature_warning);
@@ -443,7 +628,7 @@ void StepperController::getDriversStatusHandler()
     modular_server_.response().write(constants::over_temperature_150c_string,status.over_temperature_150c);
     modular_server_.response().write(constants::over_temperature_157c_string,status.over_temperature_157c);
     modular_server_.response().write(constants::current_scaling_string,status.current_scaling);
-    modular_server_.response().write(constants::stealth_mode_string,status.stealth_mode);
+    modular_server_.response().write(constants::stealth_chop_mode_string,status.stealth_chop_mode);
     modular_server_.response().write(constants::standstill_string,status.standstill);
 
     modular_server_.response().endObject();
@@ -463,37 +648,53 @@ void StepperController::getDriversSettingsHandler()
     modular_server_.response().beginObject();
 
     Driver & driver = drivers_[channel];
-    modular_server_.response().write(constants::communicating_string,driver.communicating());
+
+    bool communicating = driver.communicating();
+    modular_server_.response().write(constants::communicating_string,communicating);
+
+    if (not communicating)
+    {
+      modular_server_.response().endObject();
+      continue;
+    }
 
     TMC2209::Settings settings = driver.getSettings();
 
+    modular_server_.response().write(constants::enabled_string,settings.enabled);
     modular_server_.response().write(constants::microsteps_per_step_string,settings.microsteps_per_step);
     modular_server_.response().write(constants::inverse_motor_direction_enabled_string,settings.inverse_motor_direction_enabled);
-    modular_server_.response().write(constants::spread_cycle_enabled_string,settings.spread_cycle_enabled);
-    const ConstantString * zero_hold_current_mode_ptr = NULL;
-    if (settings.zero_hold_current_mode == TMC2209::NORMAL)
+    modular_server_.response().write(constants::stealth_chop_enabled_string,settings.stealth_chop_enabled);
+    const ConstantString * standstill_mode_ptr = NULL;
+    if (settings.standstill_mode == TMC2209::NORMAL)
     {
-      zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_normal;
+      standstill_mode_ptr = &constants::standstill_mode_normal;
     }
-    else if (settings.zero_hold_current_mode == TMC2209::FREEWHEELING)
+    else if (settings.standstill_mode == TMC2209::FREEWHEELING)
     {
-      zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_freewheeling;
+      standstill_mode_ptr = &constants::standstill_mode_freewheeling;
     }
-    else if (settings.zero_hold_current_mode == TMC2209::BRAKING)
+    else if (settings.standstill_mode == TMC2209::BRAKING)
     {
-      zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_braking;
+      standstill_mode_ptr = &constants::standstill_mode_braking;
     }
-    else if (settings.zero_hold_current_mode == TMC2209::STRONG_BRAKING)
+    else if (settings.standstill_mode == TMC2209::STRONG_BRAKING)
     {
-      zero_hold_current_mode_ptr = &constants::zero_hold_current_mode_strong_braking;
+      standstill_mode_ptr = &constants::standstill_mode_strong_braking;
     }
-    modular_server_.response().write(constants::zero_hold_current_mode_property_name,*zero_hold_current_mode_ptr);
-    modular_server_.response().write(constants::irun_string,settings.irun);
-    modular_server_.response().write(constants::ihold_string,settings.ihold);
-    modular_server_.response().write(constants::iholddelay_string,settings.iholddelay);
+    modular_server_.response().write(constants::standstill_mode_property_name,*standstill_mode_ptr);
+    modular_server_.response().write(constants::irun_percent_string,settings.irun_percent);
+    modular_server_.response().write(constants::irun_register_value_string,settings.irun_register_value);
+    modular_server_.response().write(constants::ihold_percent_string,settings.ihold_percent);
+    modular_server_.response().write(constants::ihold_register_value_string,settings.ihold_register_value);
+    modular_server_.response().write(constants::iholddelay_percent_string,settings.iholddelay_percent);
+    modular_server_.response().write(constants::iholddelay_register_value_string,settings.iholddelay_register_value);
     modular_server_.response().write(constants::automatic_current_scaling_enabled_string,settings.automatic_current_scaling_enabled);
+    modular_server_.response().write(constants::automatic_gradient_adaptation_enabled_string,settings.automatic_gradient_adaptation_enabled);
     modular_server_.response().write(constants::pwm_offset_string,settings.pwm_offset);
     modular_server_.response().write(constants::pwm_gradient_string,settings.pwm_gradient);
+    modular_server_.response().write(constants::cool_step_enabled_string,settings.cool_step_enabled);
+    modular_server_.response().write(constants::analog_current_scaling_enabled_string,settings.analog_current_scaling_enabled);
+    modular_server_.response().write(constants::internal_sense_resistors_enabled_string,settings.internal_sense_resistors_enabled);
 
     modular_server_.response().endObject();
   }
@@ -501,28 +702,56 @@ void StepperController::getDriversSettingsHandler()
   modular_server_.response().endArray();
 }
 
-void StepperController::enableAutomaticCurrentScalingHandler()
+void StepperController::getDriversMeasurementsHandler()
 {
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+  modular_server_.response().writeResultKey();
 
-  enableAutomaticCurrentScaling(channel);
+  modular_server_.response().beginArray();
+
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    modular_server_.response().beginObject();
+
+    Driver & driver = drivers_[channel];
+
+    bool communicating = driver.communicating();
+    modular_server_.response().write(constants::communicating_string,communicating);
+    if (not communicating)
+    {
+      modular_server_.response().endObject();
+      continue;
+    }
+
+    uint32_t interstep_duration = driver.getInterstepDuration();
+    modular_server_.response().write(constants::interstep_duration_string,interstep_duration);
+
+    uint16_t stall_guard_result = driver.getStallGuardResult();
+    modular_server_.response().write(constants::stall_guard_result_string,stall_guard_result);
+
+    uint8_t pwm_scale_sum = driver.getPwmScaleSum();
+    modular_server_.response().write(constants::pwm_scale_sum_string,pwm_scale_sum);
+
+    int16_t pwm_scale_auto = driver.getPwmScaleAuto();
+    modular_server_.response().write(constants::pwm_scale_auto_string,pwm_scale_auto);
+
+    uint8_t pwm_offset_auto = driver.getPwmOffsetAuto();
+    modular_server_.response().write(constants::pwm_offset_auto_string,pwm_offset_auto);
+
+    uint8_t pwm_gradient_auto = driver.getPwmGradientAuto();
+    modular_server_.response().write(constants::pwm_gradient_auto_string,pwm_gradient_auto);
+
+    modular_server_.response().endObject();
+  }
+
+  modular_server_.response().endArray();
 }
 
-void StepperController::disableAutomaticCurrentScalingHandler()
+void StepperController::standstillHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
 
-  disableAutomaticCurrentScaling(channel);
-}
-
-void StepperController::zeroHoldCurrentHandler()
-{
-  long channel;
-  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
-
-  zeroHoldCurrent(channel);
+  standstill(channel);
 }
 
 void StepperController::maximizeHoldCurrentHandler()

@@ -135,11 +135,67 @@ const long microsteps_per_step_default[CHANNEL_COUNT_MAX] =
   microsteps_per_step_element_default,
 };
 
-const ConstantString * const zero_hold_current_mode_ptr_default[CHANNEL_COUNT_MAX] =
+const ConstantString * const standstill_mode_ptr_default[CHANNEL_COUNT_MAX] =
 {
-  zero_hold_current_mode_ptr_element_default,
-  zero_hold_current_mode_ptr_element_default,
-  zero_hold_current_mode_ptr_element_default,
+  standstill_mode_ptr_element_default,
+  standstill_mode_ptr_element_default,
+  standstill_mode_ptr_element_default,
+};
+
+const bool automatic_current_scaling_default[CHANNEL_COUNT_MAX] =
+{
+  automatic_current_scaling_element_default,
+  automatic_current_scaling_element_default,
+  automatic_current_scaling_element_default,
+};
+
+const bool automatic_gradient_adaptation_default[CHANNEL_COUNT_MAX] =
+{
+  automatic_gradient_adaptation_element_default,
+  automatic_gradient_adaptation_element_default,
+  automatic_gradient_adaptation_element_default,
+};
+
+const long cool_step_lower_threshold_default[CHANNEL_COUNT_MAX] =
+{
+  cool_step_lower_threshold_element_default,
+  cool_step_lower_threshold_element_default,
+  cool_step_lower_threshold_element_default,
+};
+
+const long cool_step_upper_threshold_default[CHANNEL_COUNT_MAX] =
+{
+  cool_step_upper_threshold_element_default,
+  cool_step_upper_threshold_element_default,
+  cool_step_upper_threshold_element_default,
+};
+
+const long cool_step_duration_threshold_default[CHANNEL_COUNT_MAX] =
+{
+  cool_step_duration_threshold_element_default,
+  cool_step_duration_threshold_element_default,
+  cool_step_duration_threshold_element_default,
+};
+
+const ConstantString * const cool_step_current_increment_ptr_default[CHANNEL_COUNT_MAX] =
+{
+  cool_step_current_increment_ptr_element_default,
+  cool_step_current_increment_ptr_element_default,
+  cool_step_current_increment_ptr_element_default,
+};
+
+const ConstantString * const cool_step_measurement_count_ptr_default[CHANNEL_COUNT_MAX] =
+{
+  cool_step_measurement_count_ptr_element_default,
+  cool_step_measurement_count_ptr_element_default,
+  cool_step_measurement_count_ptr_element_default,
+};
+
+const bool cool_step_enabled_default[CHANNEL_COUNT_MAX] =
+{
+  cool_step_enabled_element_default,
+  cool_step_enabled_element_default,
+  cool_step_enabled_element_default,
 };
 
 // Parameters

@@ -56,7 +56,23 @@ extern const long hold_delay_default[CHANNEL_COUNT_MAX];
 
 extern const long microsteps_per_step_default[CHANNEL_COUNT_MAX];
 
-extern const ConstantString * const zero_hold_current_mode_ptr_default[CHANNEL_COUNT_MAX];
+extern const ConstantString * const standstill_mode_ptr_default[CHANNEL_COUNT_MAX];
+
+extern const bool automatic_current_scaling_default[CHANNEL_COUNT_MAX];
+
+extern const bool automatic_gradient_adaptation_default[CHANNEL_COUNT_MAX];
+
+extern const long cool_step_lower_threshold_default[CHANNEL_COUNT_MAX];
+
+extern const long cool_step_upper_threshold_default[CHANNEL_COUNT_MAX];
+
+extern const long cool_step_duration_threshold_default[CHANNEL_COUNT_MAX];
+
+extern const ConstantString * const cool_step_current_increment_ptr_default[CHANNEL_COUNT_MAX];
+
+extern const ConstantString * const cool_step_measurement_count_ptr_default[CHANNEL_COUNT_MAX];
+
+extern const bool cool_step_enabled_default[CHANNEL_COUNT_MAX];
 
 // Parameters
 
