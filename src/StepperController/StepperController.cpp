@@ -19,11 +19,11 @@ void StepperController::setup()
   // Reset Watchdog
   resetWatchdog();
 
-  // Driver Setup
+  // Drivers Setup
+  check_drivers_time_ = millis();
   for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
-    Driver & driver = drivers_[channel];
-    driver.setup(getDriverSerial(channel));
+    drivers_setup_[channel] = false;
   }
 
   // Pin Setup
@@ -145,8 +145,6 @@ void StepperController::setup()
   current_parameter.setRange(constants::percent_min,constants::percent_max);
 
   setChannelCountHandler();
-  StepperController::reinitialize();
-  disableAll();
 
   // Functions
   modular_server::Function & get_drivers_status_function = modular_server_.createFunction(constants::get_drivers_status_function_name);
@@ -204,28 +202,37 @@ void StepperController::setup()
 
 }
 
+void StepperController::update()
+{
+  // Parent Update
+  StepDirController::update();
+
+  unsigned long update_time = millis();
+  if ((update_time - check_drivers_time_) >= constants::check_drivers_duration)
+  {
+    check_drivers_time_ = update_time;
+    for (size_t channel=0; channel<getChannelCount(); ++channel)
+    {
+      // handle case where driver power is cycled after controller
+      if (not drivers_[channel].communicating())
+      {
+        drivers_setup_[channel] = false;
+      }
+      if (not drivers_setup_[channel])
+      {
+        setupDriver(channel);
+      }
+    }
+  }
+}
+
 void StepperController::reinitialize()
 {
   StepDirController::reinitialize();
 
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
-    resetWatchdog();
-    Driver & driver = drivers_[channel];
-    if (not driver.communicating())
-    {
-      continue;
-    }
-    invertDriverDirectionHandler(channel);
-    setRunCurrentHandler(channel);
-    setHoldCurrentHandler(channel);
-    setHoldDelayHandler(channel);
-    setMicrostepsPerStepHandler(channel);
-    setStandstillModeHandler(channel);
-    automaticCurrentScalingHandler(channel);
-    coolStepDurationThresholdHandler(channel);
-    coolStepCurrentIncrementHandler(channel);
-    coolStepEnabledHandler(channel);
+    reinitializeDriver(channel);
   }
 }
 
@@ -385,6 +392,33 @@ void StepperController::setChannelCountHandler()
   modular_server::Property & cool_step_enabled_property = modular_server_.property(constants::cool_step_enabled_property_name);
   cool_step_enabled_property.setArrayLengthRange(channel_count,channel_count);
 
+}
+
+void StepperController::setupDriver(size_t channel)
+{
+  drivers_[channel].setup(getDriverSerial(channel));
+  reinitializeDriver(channel);
+  disable(channel);
+  drivers_setup_[channel] = true;
+}
+
+ void StepperController::reinitializeDriver(size_t channel)
+{
+  resetWatchdog();
+  if (not drivers_[channel].communicating())
+  {
+    return;
+  }
+  invertDriverDirectionHandler(channel);
+  setRunCurrentHandler(channel);
+  setHoldCurrentHandler(channel);
+  setHoldDelayHandler(channel);
+  setMicrostepsPerStepHandler(channel);
+  setStandstillModeHandler(channel);
+  automaticCurrentScalingHandler(channel);
+  coolStepDurationThresholdHandler(channel);
+  coolStepCurrentIncrementHandler(channel);
+  coolStepEnabledHandler(channel);
 }
 
 void StepperController::invertDriverDirectionHandler(size_t channel)

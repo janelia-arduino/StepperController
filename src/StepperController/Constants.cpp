@@ -20,11 +20,13 @@ const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
   .version_major=3,
-  .version_minor=0,
+  .version_minor=1,
   .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
+
+extern const size_t check_drivers_duration = 2000;
 
 CONSTANT_STRING(communicating_string,"communicating");
 

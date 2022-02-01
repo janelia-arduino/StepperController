@@ -31,6 +31,8 @@ extern const modular_server::HardwareInfo hardware_info;
 
 extern const size_t controller_count;
 
+extern const size_t check_drivers_duration;
+
 extern ConstantString communicating_string;
 
 // Status Strings
