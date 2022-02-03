@@ -16,43 +16,60 @@
 
 * API NAMES
 
-  #+BEGIN_SRC js
-    {
-      "id": "getApi",
-      "result": {
-        "firmware": [
-          "StepperController"
-        ],
-        "verbosity": "NAMES",
-        "functions": [
-          "getDriversStatus",
-          "getDriversSettings",
-          "enableAutomaticCurrentScaling",
-          "disableAutomaticCurrentScaling",
-          "zeroHoldCurrent",
-          "maximizeHoldCurrent",
-          "modifyHoldCurrent",
-          "restoreHoldCurrent",
-          "modifyRunCurrent",
-          "restoreRunCurrent",
-          "setPwmOffset",
-          "setPwmGradient",
-        ],
-        "parameters": [
-          "pwm_amplitude",
-          "current"
-        ],
-        "properties": [
-          "invertDriverDirection",
-          "runCurrent",
-          "holdCurrent",
-          "holdDelay",
-          "microstepsPerStep",
-          "zeroHoldCurrentMode"
-        ]
+#+BEGIN_SRC js
+
+{
+  "id": "getApi",
+  "result": {
+    "ancestors": [
+      "ModularServer",
+      "ModularDeviceBase",
+      "StepDirController"
+    ],
+    "firmware": [
+      {
+        "name": "StepperController",
+        "version": "3.1.0"
       }
-    }
-  #+END_SRC
+    ],
+    "verbosity": "NAMES",
+    "functions": [
+      "getDriversStatus",
+      "getDriversSettings",
+      "getDriversMeasurements",
+      "standstill",
+      "maximizeHoldCurrent",
+      "modifyHoldCurrent",
+      "restoreHoldCurrent",
+      "modifyRunCurrent",
+      "restoreRunCurrent",
+      "setPwmOffset",
+      "setPwmGradient"
+    ],
+    "parameters": [
+      "pwm_amplitude",
+      "current"
+    ],
+    "properties": [
+      "invertDriverDirection",
+      "runCurrent",
+      "holdCurrent",
+      "holdDelay",
+      "microstepsPerStep",
+      "standstillMode",
+      "automaticCurrentScaling",
+      "automaticGradientAdaptation",
+      "coolStepLowerThreshold",
+      "coolStepUpperThreshold",
+      "coolStepDurationThreshold",
+      "coolStepCurrentIncrement",
+      "coolStepMeasurementCount",
+      "coolStepEnabled"
+    ]
+  }
+}
+
+#+END_SRC
 
 * API GENERAL
 

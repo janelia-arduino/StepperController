@@ -48,6 +48,7 @@ CONSTANT_STRING(stealth_chop_mode_string,"stealth_chop_mode");
 CONSTANT_STRING(standstill_string,"standstill");
 
 // Setting Strings
+CONSTANT_STRING(is_setup_string,"is_setup");
 CONSTANT_STRING(enabled_string,"enabled");
 CONSTANT_STRING(microsteps_per_step_string,"microsteps_per_step");
 CONSTANT_STRING(inverse_motor_direction_enabled_string,"inverse_motor_direction_enabled");

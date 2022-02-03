@@ -66,7 +66,6 @@ private:
 
   typedef TMC2209 Driver;
   Driver drivers_[stepper_controller::constants::CHANNEL_COUNT_MAX];
-  bool drivers_setup_[stepper_controller::constants::CHANNEL_COUNT_MAX];
   unsigned long check_drivers_time_;
 
   virtual void setupDriver(size_t channel);

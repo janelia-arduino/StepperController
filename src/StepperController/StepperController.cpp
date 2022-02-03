@@ -20,11 +20,11 @@ void StepperController::setup()
   resetWatchdog();
 
   // Drivers Setup
-  check_drivers_time_ = millis();
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
-    drivers_setup_[channel] = false;
+    setupDriver(channel);
   }
+  check_drivers_time_ = millis();
 
   // Pin Setup
 
@@ -213,12 +213,7 @@ void StepperController::update()
     check_drivers_time_ = update_time;
     for (size_t channel=0; channel<getChannelCount(); ++channel)
     {
-      // handle case where driver power is cycled after controller
-      if (not drivers_[channel].communicating())
-      {
-        drivers_setup_[channel] = false;
-      }
-      if (not drivers_setup_[channel])
+      if (drivers_[channel].isCommunicatingButNotSetup())
       {
         setupDriver(channel);
       }
@@ -399,16 +394,11 @@ void StepperController::setupDriver(size_t channel)
   drivers_[channel].setup(getDriverSerial(channel));
   reinitializeDriver(channel);
   disable(channel);
-  drivers_setup_[channel] = true;
 }
 
  void StepperController::reinitializeDriver(size_t channel)
 {
   resetWatchdog();
-  if (not drivers_[channel].communicating())
-  {
-    return;
-  }
   invertDriverDirectionHandler(channel);
   setRunCurrentHandler(channel);
   setHoldCurrentHandler(channel);
@@ -640,7 +630,7 @@ void StepperController::getDriversStatusHandler()
 
     Driver & driver = drivers_[channel];
 
-    bool communicating = driver.communicating();
+    bool communicating = driver.isCommunicating();
     modular_server_.response().write(constants::communicating_string,communicating);
     if (not communicating)
     {
@@ -683,9 +673,8 @@ void StepperController::getDriversSettingsHandler()
 
     Driver & driver = drivers_[channel];
 
-    bool communicating = driver.communicating();
+    bool communicating = driver.isCommunicating();
     modular_server_.response().write(constants::communicating_string,communicating);
-
     if (not communicating)
     {
       modular_server_.response().endObject();
@@ -693,7 +682,7 @@ void StepperController::getDriversSettingsHandler()
     }
 
     TMC2209::Settings settings = driver.getSettings();
-
+    modular_server_.response().write(constants::is_setup_string,settings.is_setup);
     modular_server_.response().write(constants::enabled_string,settings.enabled);
     modular_server_.response().write(constants::microsteps_per_step_string,settings.microsteps_per_step);
     modular_server_.response().write(constants::inverse_motor_direction_enabled_string,settings.inverse_motor_direction_enabled);
@@ -748,7 +737,7 @@ void StepperController::getDriversMeasurementsHandler()
 
     Driver & driver = drivers_[channel];
 
-    bool communicating = driver.communicating();
+    bool communicating = driver.isCommunicating();
     modular_server_.response().write(constants::communicating_string,communicating);
     if (not communicating)
     {
