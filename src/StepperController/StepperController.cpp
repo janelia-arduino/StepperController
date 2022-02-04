@@ -22,7 +22,7 @@ void StepperController::setup()
   // Drivers Setup
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
-    setupDriver(channel);
+    StepperController::setupDriver(channel);
   }
   check_drivers_time_ = millis();
 
@@ -217,6 +217,10 @@ void StepperController::update()
       {
         setupDriver(channel);
       }
+      else if (not drivers_[channel].isCommunicating())
+      {
+        shutdownDriver(channel);
+      }
     }
   }
 }
@@ -339,6 +343,33 @@ HardwareSerial & StepperController::getDriverSerial(size_t driver)
   return *(constants::driver_serial_ptrs[driver]);
 }
 
+void StepperController::setupDriver(size_t channel)
+{
+  drivers_[channel].setup(getDriverSerial(channel));
+  reinitializeDriver(channel);
+  disable(channel);
+}
+
+void StepperController::shutdownDriver(size_t channel)
+{
+  disable(channel);
+}
+
+void StepperController::reinitializeDriver(size_t channel)
+{
+  resetWatchdog();
+  invertDriverDirectionHandler(channel);
+  setRunCurrentHandler(channel);
+  setHoldCurrentHandler(channel);
+  setHoldDelayHandler(channel);
+  setMicrostepsPerStepHandler(channel);
+  setStandstillModeHandler(channel);
+  automaticCurrentScalingHandler(channel);
+  coolStepDurationThresholdHandler(channel);
+  coolStepCurrentIncrementHandler(channel);
+  coolStepEnabledHandler(channel);
+}
+
 void StepperController::setChannelCountHandler()
 {
   StepDirController::setChannelCountHandler();
@@ -387,28 +418,6 @@ void StepperController::setChannelCountHandler()
   modular_server::Property & cool_step_enabled_property = modular_server_.property(constants::cool_step_enabled_property_name);
   cool_step_enabled_property.setArrayLengthRange(channel_count,channel_count);
 
-}
-
-void StepperController::setupDriver(size_t channel)
-{
-  drivers_[channel].setup(getDriverSerial(channel));
-  reinitializeDriver(channel);
-  disable(channel);
-}
-
- void StepperController::reinitializeDriver(size_t channel)
-{
-  resetWatchdog();
-  invertDriverDirectionHandler(channel);
-  setRunCurrentHandler(channel);
-  setHoldCurrentHandler(channel);
-  setHoldDelayHandler(channel);
-  setMicrostepsPerStepHandler(channel);
-  setStandstillModeHandler(channel);
-  automaticCurrentScalingHandler(channel);
-  coolStepDurationThresholdHandler(channel);
-  coolStepCurrentIncrementHandler(channel);
-  coolStepEnabledHandler(channel);
 }
 
 void StepperController::invertDriverDirectionHandler(size_t channel)
