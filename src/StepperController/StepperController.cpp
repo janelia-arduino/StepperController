@@ -19,13 +19,6 @@ void StepperController::setup()
   // Reset Watchdog
   resetWatchdog();
 
-  // Drivers Setup
-  for (size_t channel=0; channel<getChannelCount(); ++channel)
-  {
-    StepperController::setupDriver(channel);
-  }
-  check_drivers_time_ = millis();
-
   // Pin Setup
 
   // Set Device ID
@@ -199,6 +192,13 @@ void StepperController::setup()
   set_pwm_gradient_function.addParameter(pwm_amplitude_parameter);
 
   // Callbacks
+
+  // Drivers Setup
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    StepperController::setupDriver(channel);
+  }
+  check_drivers_time_ = millis();
 
 }
 
@@ -441,7 +441,6 @@ void StepperController::setRunCurrentHandler(size_t channel)
   modular_server::Property & run_current_property = modular_server_.property(constants::run_current_property_name);
   long run_current;
   run_current_property.getElementValue(channel,run_current);
-
   drivers_[channel].setRunCurrent(run_current);
 }
 
@@ -450,7 +449,6 @@ void StepperController::setHoldCurrentHandler(size_t channel)
   modular_server::Property & hold_current_property = modular_server_.property(constants::hold_current_property_name);
   long hold_current;
   hold_current_property.getElementValue(channel,hold_current);
-
   drivers_[channel].setHoldCurrent(hold_current);
 }
 
