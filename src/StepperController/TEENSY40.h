@@ -58,6 +58,10 @@ extern const long microsteps_per_step_default[CHANNEL_COUNT_MAX];
 
 extern const ConstantString * const standstill_mode_ptr_default[CHANNEL_COUNT_MAX];
 
+extern const long pwm_offset_default[CHANNEL_COUNT_MAX];
+
+extern const long pwm_gradient_default[CHANNEL_COUNT_MAX];
+
 extern const bool automatic_current_scaling_default[CHANNEL_COUNT_MAX];
 
 extern const bool automatic_gradient_adaptation_default[CHANNEL_COUNT_MAX];

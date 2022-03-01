@@ -16,9 +16,9 @@ namespace stepper_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=14};
+enum{PROPERTY_COUNT_MAX=16};
 enum{PARAMETER_COUNT_MAX=2};
-enum{FUNCTION_COUNT_MAX=11};
+enum{FUNCTION_COUNT_MAX=13};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -66,8 +66,6 @@ extern ConstantString iholddelay_percent_string;
 extern ConstantString iholddelay_register_value_string;
 extern ConstantString automatic_current_scaling_enabled_string;
 extern ConstantString automatic_gradient_adaptation_enabled_string;
-extern ConstantString pwm_offset_string;
-extern ConstantString pwm_gradient_string;
 extern ConstantString cool_step_enabled_string;
 extern ConstantString analog_current_scaling_enabled_string;
 extern ConstantString internal_sense_resistors_enabled_string;
@@ -135,6 +133,12 @@ extern ConstantString standstill_mode_strong_braking;
 extern modular_server::SubsetMemberType standstill_mode_ptr_subset[STANDSTILL_MODE_SUBSET_LENGTH];
 extern const ConstantString * const standstill_mode_ptr_element_default;
 
+extern ConstantString pwm_offset_property_name;
+extern const long pwm_offset_element_default;
+
+extern ConstantString pwm_gradient_property_name;
+extern const long pwm_gradient_element_default;
+
 extern ConstantString automatic_current_scaling_property_name;
 extern const bool automatic_current_scaling_element_default;
 
@@ -194,8 +198,10 @@ extern ConstantString modify_hold_current_function_name;
 extern ConstantString restore_hold_current_function_name;
 extern ConstantString modify_run_current_function_name;
 extern ConstantString restore_run_current_function_name;
-extern ConstantString set_pwm_offset_function_name;
-extern ConstantString set_pwm_gradient_function_name;
+extern ConstantString modify_pwm_offset_function_name;
+extern ConstantString restore_pwm_offset_function_name;
+extern ConstantString modify_pwm_gradient_function_name;
+extern ConstantString restore_pwm_gradient_function_name;
 
 // Callbacks
 

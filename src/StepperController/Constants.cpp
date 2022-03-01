@@ -19,9 +19,9 @@ CONSTANT_STRING(firmware_name,"StepperController");
 const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
-  .version_major=3,
-  .version_minor=2,
-  .version_patch=1,
+  .version_major=4,
+  .version_minor=0,
+  .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
@@ -61,8 +61,6 @@ CONSTANT_STRING(iholddelay_percent_string,"iholddelay_percent");
 CONSTANT_STRING(iholddelay_register_value_string,"iholddelay_register_value");
 CONSTANT_STRING(automatic_current_scaling_enabled_string,"automatic_current_scaling_enabled");
 CONSTANT_STRING(automatic_gradient_adaptation_enabled_string,"automatic_gradient_adaptation_enabled");
-CONSTANT_STRING(pwm_offset_string,"pwm_offset");
-CONSTANT_STRING(pwm_gradient_string,"pwm_gradient");
 CONSTANT_STRING(cool_step_enabled_string,"cool_step_enabled");
 CONSTANT_STRING(analog_current_scaling_enabled_string,"analog_current_scaling_enabled");
 CONSTANT_STRING(internal_sense_resistors_enabled_string,"internal_sense_resistors_enabled");
@@ -143,6 +141,12 @@ modular_server::SubsetMemberType standstill_mode_ptr_subset[STANDSTILL_MODE_SUBS
 };
 const ConstantString * const standstill_mode_ptr_element_default = &standstill_mode_strong_braking;
 
+CONSTANT_STRING(pwm_offset_property_name,"pwmOffset");
+const long pwm_offset_element_default = 36;
+
+CONSTANT_STRING(pwm_gradient_property_name,"pwmGradient");
+const long pwm_gradient_element_default = 0;
+
 CONSTANT_STRING(automatic_current_scaling_property_name,"automaticCurrentScaling");
 const bool automatic_current_scaling_element_default = false;
 
@@ -212,8 +216,10 @@ CONSTANT_STRING(modify_hold_current_function_name,"modifyHoldCurrent");
 CONSTANT_STRING(restore_hold_current_function_name,"restoreHoldCurrent");
 CONSTANT_STRING(modify_run_current_function_name,"modifyRunCurrent");
 CONSTANT_STRING(restore_run_current_function_name,"restoreRunCurrent");
-CONSTANT_STRING(set_pwm_offset_function_name,"setPwmOffset");
-CONSTANT_STRING(set_pwm_gradient_function_name,"setPwmGradient");
+CONSTANT_STRING(modify_pwm_offset_function_name,"modifyPwmOffset");
+CONSTANT_STRING(restore_pwm_offset_function_name,"restorePwmOffset");
+CONSTANT_STRING(modify_pwm_gradient_function_name,"modifyPwmGradient");
+CONSTANT_STRING(restore_pwm_gradient_function_name,"restorePwmGradient");
 
 // Callbacks
 

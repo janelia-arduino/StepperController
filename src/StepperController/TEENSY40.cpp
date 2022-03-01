@@ -142,6 +142,20 @@ const ConstantString * const standstill_mode_ptr_default[CHANNEL_COUNT_MAX] =
   standstill_mode_ptr_element_default,
 };
 
+const long pwm_offset_default[CHANNEL_COUNT_MAX] =
+{
+  pwm_offset_element_default,
+  pwm_offset_element_default,
+  pwm_offset_element_default,
+};
+
+const long pwm_gradient_default[CHANNEL_COUNT_MAX] =
+{
+  pwm_gradient_element_default,
+  pwm_gradient_element_default,
+  pwm_gradient_element_default,
+};
+
 const bool automatic_current_scaling_default[CHANNEL_COUNT_MAX] =
 {
   automatic_current_scaling_element_default,

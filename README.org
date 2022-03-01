@@ -4,7 +4,7 @@
 
 * Library Information
   - Name :: StepperController
-  - Version :: 3.2.1
+  - Version :: 4.0.0
   - License :: BSD
   - URL :: https://github.com/janelia-arduino/StepperController
   - Author :: Peter Polidoro
@@ -29,7 +29,7 @@
     "firmware": [
       {
         "name": "StepperController",
-        "version": "3.2.1"
+        "version": "4.0.0"
       }
     ],
     "verbosity": "NAMES",
@@ -43,8 +43,10 @@
       "restoreHoldCurrent",
       "modifyRunCurrent",
       "restoreRunCurrent",
-      "setPwmOffset",
-      "setPwmGradient"
+      "modifyPwmOffset",
+      "restorePwmOffset",
+      "modifyPwmGradient",
+      "restorePwmGradient"
     ],
     "parameters": [
       "pwm_amplitude",
@@ -57,6 +59,8 @@
       "holdDelay",
       "microstepsPerStep",
       "standstillMode",
+      "pwmOffset",
+      "pwmGradient",
       "automaticCurrentScaling",
       "automaticGradientAdaptation",
       "coolStepLowerThreshold",

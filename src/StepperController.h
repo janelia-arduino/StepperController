@@ -46,10 +46,12 @@ public:
     uint8_t current);
   void restoreRunCurrent(size_t channel);
 
-  void setPwmOffset(size_t channel,
+  void modifyPwmOffset(size_t channel,
     uint8_t pwm_amplitude);
-  void setPwmGradient(size_t channel,
+  void restorePwmOffset(size_t channel);
+  void modifyPwmGradient(size_t channel,
     uint8_t pwm_amplitude);
+  void restorePwmGradient(size_t channel);
 
 protected:
   virtual HardwareSerial & getDriverSerial(size_t driver);
@@ -81,6 +83,8 @@ private:
   void postSetMicrostepsPerStepHandler(size_t channel);
   void setMicrostepsPerStepHandler(size_t channel);
   void setStandstillModeHandler(size_t channel);
+  void setPwmOffsetHandler(size_t channel);
+  void setPwmGradientHandler(size_t channel);
   void automaticCurrentScalingHandler(size_t channel);
   void automaticGradientAdaptationHandler(size_t channel);
   void coolStepDurationThresholdHandler(size_t channel);
@@ -96,8 +100,10 @@ private:
   void restoreHoldCurrentHandler();
   void modifyRunCurrentHandler();
   void restoreRunCurrentHandler();
-  void setPwmOffsetHandler();
-  void setPwmGradientHandler();
+  void modifyPwmOffsetHandler();
+  void restorePwmOffsetHandler();
+  void modifyPwmGradientHandler();
+  void restorePwmGradientHandler();
 
 };
 

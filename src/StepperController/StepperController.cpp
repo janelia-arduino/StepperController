@@ -100,6 +100,14 @@ void StepperController::setup()
   standstill_mode_property.setSubset(constants::standstill_mode_ptr_subset);
   standstill_mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setStandstillModeHandler));
 
+  modular_server::Property & pwm_offset_property = modular_server_.createProperty(stepper_controller::constants::pwm_offset_property_name,constants::pwm_offset_default);
+  pwm_offset_property.setRange(constants::pwm_amplitude_min,constants::pwm_amplitude_max);
+  pwm_offset_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setPwmOffsetHandler));
+
+  modular_server::Property & pwm_gradient_property = modular_server_.createProperty(stepper_controller::constants::pwm_gradient_property_name,constants::pwm_gradient_default);
+  pwm_gradient_property.setRange(constants::pwm_amplitude_min,constants::pwm_amplitude_max);
+  pwm_gradient_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::setPwmGradientHandler));
+
   modular_server::Property & automatic_current_scaling_property = modular_server_.createProperty(constants::automatic_current_scaling_property_name,constants::automatic_current_scaling_default);
   automatic_current_scaling_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepperController::automaticCurrentScalingHandler));
 
@@ -181,15 +189,23 @@ void StepperController::setup()
   restore_run_current_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restoreRunCurrentHandler));
   restore_run_current_function.addParameter(channel_parameter);
 
-  modular_server::Function & set_pwm_offset_function = modular_server_.createFunction(constants::set_pwm_offset_function_name);
-  set_pwm_offset_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setPwmOffsetHandler));
-  set_pwm_offset_function.addParameter(channel_parameter);
-  set_pwm_offset_function.addParameter(pwm_amplitude_parameter);
+  modular_server::Function & modify_pwm_offset_function = modular_server_.createFunction(constants::modify_pwm_offset_function_name);
+  modify_pwm_offset_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::modifyPwmOffsetHandler));
+  modify_pwm_offset_function.addParameter(channel_parameter);
+  modify_pwm_offset_function.addParameter(pwm_amplitude_parameter);
 
-  modular_server::Function & set_pwm_gradient_function = modular_server_.createFunction(constants::set_pwm_gradient_function_name);
-  set_pwm_gradient_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::setPwmGradientHandler));
-  set_pwm_gradient_function.addParameter(channel_parameter);
-  set_pwm_gradient_function.addParameter(pwm_amplitude_parameter);
+  modular_server::Function & restore_pwm_offset_function = modular_server_.createFunction(constants::restore_pwm_offset_function_name);
+  restore_pwm_offset_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restorePwmOffsetHandler));
+  restore_pwm_offset_function.addParameter(channel_parameter);
+
+  modular_server::Function & modify_pwm_gradient_function = modular_server_.createFunction(constants::modify_pwm_gradient_function_name);
+  modify_pwm_gradient_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::modifyPwmGradientHandler));
+  modify_pwm_gradient_function.addParameter(channel_parameter);
+  modify_pwm_gradient_function.addParameter(pwm_amplitude_parameter);
+
+  modular_server::Function & restore_pwm_gradient_function = modular_server_.createFunction(constants::restore_pwm_gradient_function_name);
+  restore_pwm_gradient_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepperController::restorePwmGradientHandler));
+  restore_pwm_gradient_function.addParameter(channel_parameter);
 
   // Callbacks
 
@@ -320,7 +336,7 @@ void StepperController::restoreRunCurrent(size_t channel)
   }
 }
 
-void StepperController::setPwmOffset(size_t channel,
+void StepperController::modifyPwmOffset(size_t channel,
   uint8_t pwm_amplitude)
 {
   if (channel < getChannelCount())
@@ -329,12 +345,28 @@ void StepperController::setPwmOffset(size_t channel,
   }
 }
 
-void StepperController::setPwmGradient(size_t channel,
+void StepperController::restorePwmOffset(size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    setPwmOffsetHandler(channel);
+  }
+}
+
+void StepperController::modifyPwmGradient(size_t channel,
   uint8_t pwm_amplitude)
 {
   if (channel < getChannelCount())
   {
     drivers_[channel].setPwmGradient(pwm_amplitude);
+  }
+}
+
+void StepperController::restorePwmGradient(size_t channel)
+{
+  if (channel < getChannelCount())
+  {
+    setPwmGradientHandler(channel);
   }
 }
 
@@ -364,6 +396,8 @@ void StepperController::reinitializeDriver(size_t channel)
   setHoldDelayHandler(channel);
   setMicrostepsPerStepHandler(channel);
   setStandstillModeHandler(channel);
+  setPwmOffsetHandler(channel);
+  setPwmGradientHandler(channel);
   automaticCurrentScalingHandler(channel);
   coolStepDurationThresholdHandler(channel);
   coolStepCurrentIncrementHandler(channel);
@@ -393,6 +427,12 @@ void StepperController::setChannelCountHandler()
 
   modular_server::Property & standstill_mode_property = modular_server_.property(constants::standstill_mode_property_name);
   standstill_mode_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & pwm_offset_property = modular_server_.property(constants::pwm_offset_property_name);
+  pwm_offset_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & pwm_gradient_property = modular_server_.property(constants::pwm_gradient_property_name);
+  pwm_gradient_property.setArrayLengthRange(channel_count,channel_count);
 
   modular_server::Property & automatic_current_scaling_property = modular_server_.property(constants::automatic_current_scaling_property_name);
   automatic_current_scaling_property.setArrayLengthRange(channel_count,channel_count);
@@ -506,6 +546,22 @@ void StepperController::setStandstillModeHandler(size_t channel)
   }
   Driver & driver = drivers_[channel];
   driver.setStandstillMode(standstill_mode);
+}
+
+void StepperController::setPwmOffsetHandler(size_t channel)
+{
+  modular_server::Property & pwm_offset_property = modular_server_.property(constants::pwm_offset_property_name);
+  long pwm_offset;
+  pwm_offset_property.getElementValue(channel,pwm_offset);
+  drivers_[channel].setPwmOffset(pwm_offset);
+}
+
+void StepperController::setPwmGradientHandler(size_t channel)
+{
+  modular_server::Property & pwm_gradient_property = modular_server_.property(constants::pwm_gradient_property_name);
+  long pwm_gradient;
+  pwm_gradient_property.getElementValue(channel,pwm_gradient);
+  drivers_[channel].setPwmGradient(pwm_gradient);
 }
 
 void StepperController::automaticCurrentScalingHandler(size_t channel)
@@ -720,8 +776,8 @@ void StepperController::getDriversSettingsHandler()
     modular_server_.response().write(constants::iholddelay_register_value_string,settings.iholddelay_register_value);
     modular_server_.response().write(constants::automatic_current_scaling_enabled_string,settings.automatic_current_scaling_enabled);
     modular_server_.response().write(constants::automatic_gradient_adaptation_enabled_string,settings.automatic_gradient_adaptation_enabled);
-    modular_server_.response().write(constants::pwm_offset_string,settings.pwm_offset);
-    modular_server_.response().write(constants::pwm_gradient_string,settings.pwm_gradient);
+    modular_server_.response().write(constants::pwm_offset_property_name,settings.pwm_offset);
+    modular_server_.response().write(constants::pwm_gradient_property_name,settings.pwm_gradient);
     modular_server_.response().write(constants::cool_step_enabled_string,settings.cool_step_enabled);
     modular_server_.response().write(constants::analog_current_scaling_enabled_string,settings.analog_current_scaling_enabled);
     modular_server_.response().write(constants::internal_sense_resistors_enabled_string,settings.internal_sense_resistors_enabled);
@@ -830,7 +886,7 @@ void StepperController::restoreRunCurrentHandler()
   restoreRunCurrent(channel);
 }
 
-void StepperController::setPwmOffsetHandler()
+void StepperController::modifyPwmOffsetHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
@@ -838,10 +894,18 @@ void StepperController::setPwmOffsetHandler()
   long pwm_amplitude;
   modular_server_.parameter(constants::pwm_amplitude_parameter_name).getValue(pwm_amplitude);
 
-  setPwmOffset(channel,pwm_amplitude);
+  modifyPwmOffset(channel,pwm_amplitude);
 }
 
-void StepperController::setPwmGradientHandler()
+void StepperController::restorePwmOffsetHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  restorePwmOffset(channel);
+}
+
+void StepperController::modifyPwmGradientHandler()
 {
   long channel;
   modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
@@ -849,5 +913,13 @@ void StepperController::setPwmGradientHandler()
   long pwm_amplitude;
   modular_server_.parameter(constants::pwm_amplitude_parameter_name).getValue(pwm_amplitude);
 
-  setPwmGradient(channel,pwm_amplitude);
+  modifyPwmGradient(channel,pwm_amplitude);
+}
+
+void StepperController::restorePwmGradientHandler()
+{
+  long channel;
+  modular_server_.parameter(step_dir_controller::constants::channel_parameter_name).getValue(channel);
+
+  restorePwmGradient(channel);
 }
