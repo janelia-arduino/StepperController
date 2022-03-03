@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
   .name_ptr=&firmware_name,
   .version_major=4,
   .version_minor=0,
-  .version_patch=0,
+  .version_patch=1,
 };
 
 CONSTANT_STRING(hardware_name,"stepper_controller");
@@ -110,7 +110,7 @@ CONSTANT_STRING(hold_current_property_name,"holdCurrent");
 const long hold_current_element_default = 0;
 
 CONSTANT_STRING(hold_delay_property_name,"holdDelay");
-const long hold_delay_element_default = 10;
+const long hold_delay_element_default = 0;
 
 CONSTANT_STRING(microsteps_per_step_property_name,"microstepsPerStep");
 modular_server::SubsetMemberType microsteps_per_step_subset[MICROSTEPS_PER_STEP_SUBSET_LENGTH] =
