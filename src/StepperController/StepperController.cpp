@@ -212,7 +212,7 @@ void StepperController::setup()
   // Drivers Setup
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
-    StepperController::setupDriver(channel);
+    setupDriver(channel);
   }
   check_drivers_time_ = millis();
 
@@ -284,6 +284,20 @@ void StepperController::disable(size_t channel)
   driver.disable();
 
   enabled_[channel] = false;
+}
+
+bool StepperController::driverSetupCommunicatingAndEnabled(size_t channel)
+{
+  bool setup_communicating_enabled = false;
+  if (channel < getChannelCount())
+  {
+    Driver & driver = drivers_[channel];
+    if (enabled_[channel] and driver.isSetupAndCommunicating())
+    {
+      setup_communicating_enabled = true;
+    }
+  }
+  return setup_communicating_enabled;
 }
 
 void StepperController::standstill(size_t channel)

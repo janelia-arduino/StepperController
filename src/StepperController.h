@@ -36,6 +36,8 @@ public:
   virtual void enable(size_t channel);
   virtual void disable(size_t channel);
 
+  bool driverSetupCommunicatingAndEnabled(size_t channel);
+
   void standstill(size_t channel);
   void maximizeHoldCurrent(size_t channel);
   void modifyHoldCurrent(size_t channel,
