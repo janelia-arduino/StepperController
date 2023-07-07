@@ -19,8 +19,8 @@ CONSTANT_STRING(firmware_name,"StepperController");
 const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
-  .version_major=4,
-  .version_minor=1,
+  .version_major=5,
+  .version_minor=0,
   .version_patch=0,
 };
 
@@ -49,7 +49,7 @@ CONSTANT_STRING(standstill_string,"standstill");
 
 // Setting Strings
 CONSTANT_STRING(is_setup_string,"is_setup");
-CONSTANT_STRING(enabled_string,"enabled");
+CONSTANT_STRING(software_enabled_string,"software_enabled");
 CONSTANT_STRING(microsteps_per_step_string,"microsteps_per_step");
 CONSTANT_STRING(inverse_motor_direction_enabled_string,"inverse_motor_direction_enabled");
 CONSTANT_STRING(stealth_chop_enabled_string,"stealth_chop_enabled");

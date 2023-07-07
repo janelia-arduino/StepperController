@@ -4,7 +4,7 @@
 
 * Library Information
   - Name :: StepperController
-  - Version :: 4.1.0
+  - Version :: 5.0.0
   - License :: BSD
   - URL :: https://github.com/janelia-arduino/StepperController
   - Author :: Peter Polidoro
@@ -29,7 +29,7 @@
     "firmware": [
       {
         "name": "StepperController",
-        "version": "4.1.0"
+        "version": "5.0.0"
       }
     ],
     "verbosity": "NAMES",

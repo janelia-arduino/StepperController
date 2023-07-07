@@ -54,7 +54,7 @@ extern ConstantString standstill_string;
 
 // Setting Strings
 extern ConstantString is_setup_string;
-extern ConstantString enabled_string;
+extern ConstantString software_enabled_string;
 extern ConstantString microsteps_per_step_string;
 extern ConstantString inverse_motor_direction_enabled_string;
 extern ConstantString stealth_chop_enabled_string;

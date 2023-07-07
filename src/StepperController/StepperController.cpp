@@ -760,7 +760,7 @@ void StepperController::getDriversSettingsHandler()
 
     TMC2209::Settings settings = driver.getSettings();
     modular_server_.response().write(constants::is_setup_string,settings.is_setup);
-    modular_server_.response().write(constants::enabled_string,settings.enabled);
+    modular_server_.response().write(constants::software_enabled_string,settings.software_enabled);
     modular_server_.response().write(constants::microsteps_per_step_string,settings.microsteps_per_step);
     modular_server_.response().write(constants::inverse_motor_direction_enabled_string,settings.inverse_motor_direction_enabled);
     modular_server_.response().write(constants::stealth_chop_enabled_string,settings.stealth_chop_enabled);
